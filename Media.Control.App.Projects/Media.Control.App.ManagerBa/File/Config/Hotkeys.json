@@ -1,0 +1,154 @@
+{
+  "HotKeys": [
+    {
+      "Key": "Play",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Record",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Stop",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Puse",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Fist",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "End",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "FF",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Rew",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "-1 Frame",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "-10 Frame",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "+1 Frame",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "+10 Frame",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "In Mark",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Out Mark",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "In Delete",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Out Delete",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Out GO",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "In GO",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Jog",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Shuttle",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Group Play",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "Group Next",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "List Delete",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "List Clean",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    },
+    {
+      "Key": "List Recue",
+      "Value": "None",
+      "Defin": "",
+      "KeyCombination": null
+    }
+  ]
+}

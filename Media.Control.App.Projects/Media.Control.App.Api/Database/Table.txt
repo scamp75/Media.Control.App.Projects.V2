@@ -1,0 +1,37 @@
+-- mediaservice.logdatatb definition
+
+CREATE TABLE `logdatatb` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Type` text DEFAULT NULL,
+  `Title` text DEFAULT NULL,
+  `Message` text DEFAULT NULL,
+  `Channel` varchar(100) DEFAULT NULL,
+  `CreateDate` datetime DEFAULT NULL,
+  `Time` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3912 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- mediaservice.mediainfotb definition
+
+CREATE TABLE `mediainfotb` (
+  `Num` int(11) NOT NULL AUTO_INCREMENT,
+  `MediaId` varchar(100) DEFAULT NULL,
+  `Name` varchar(100) DEFAULT NULL,
+  `Duration` varchar(100) DEFAULT NULL,
+  `Frame` int(11) DEFAULT NULL,
+  `CreateDate` datetime DEFAULT NULL,
+  `InPoint` int(11) DEFAULT NULL,
+  `InTimeCode` varchar(100) DEFAULT NULL,
+  `OutPoint` int(11) DEFAULT NULL,
+  `OutTimeCode` varchar(100) DEFAULT NULL,
+  `Type` varchar(100) DEFAULT NULL,
+  `Creator` varchar(100) DEFAULT NULL,
+  `Proxy` varchar(300) DEFAULT NULL,
+  `Image` varchar(300) DEFAULT NULL,
+  `Path` varchar(300) DEFAULT NULL,
+  `Des` varchar(300) DEFAULT NULL,
+  PRIMARY KEY (`Num`)
+) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+
+CREATE DATABASE `mediaservice` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;

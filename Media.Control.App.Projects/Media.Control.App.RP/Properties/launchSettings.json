@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Media.Control.App.RP": {
+      "commandName": "Project",
+      "commandLineArgs": "\"Create\"\r\n\"1\"\r\n\"0\" \r\n\"46\"\r\n\"C:\\Users\\Leejunghee\\source\\repos\\Media.Control.App.Projects\\Media.Control.App.Projects\\Media.Control.App.ManagerBa\\bin\\Debug\\net8.0-windows\\Config\\SystemConfig.json\""
+    }
+  }
+}

@@ -1,0 +1,33 @@
+﻿<Window x:Class="Ampp.Control.lib.Test.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ampp.Control.lib.Test.App"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="420" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="230"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <Border x:Name="PreviewBorder" Background="Black" Margin="10">
+            <Image x:Name="PreviewImage" />
+        </Border>
+        <!--<Image x:Name="preview" />-->
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button  x:Name="butConnect" Click="butConnect_Click" Content="Connect" Width="60" Margin="10,0,0,0"/>
+            <TextBox x:Name="MediaId" Text="Temp_" Width="110" TextBlock.TextAlignment="Center"  Height="30" FontSize="10" Margin="3"
+                       Background="DarkGray" />
+            <Button  x:Name="butPrepaer" Click="butPrepaer_Click" Content="Prepaer" Width="60" Margin="10,0,0,0"/>
+            <Button  x:Name="butPlay" Click="butPlay_Click" Content="Record" Width="60" Margin="10,0,0,0"/>
+            <Button  x:Name="butStop" Click="butStop_Click" Content="Stop" Width="60" Margin="10,0,0,0"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" x:Name="txtState" Text="Logger..." FontSize="10" Margin="3"/>
+        <TextBlock Grid.Row="3" x:Name="txtNotif" Text="..." FontSize="10" Margin="3"/>
+    </Grid>
+</Window>

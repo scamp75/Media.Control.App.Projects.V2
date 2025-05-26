@@ -1,0 +1,39 @@
+{
+  "ChannelConfigData": {
+    "EnginType": 0,
+    "AamppConfig": {
+      "Platformurl": "https://apac1.gvampp.com",
+      "ApiKey": "NjQ2OGQzMWY2OTgzNDIxMDg4ZGI3NjUxMTlmMDJmNzY6N25VMy95L1dTWGNXQitNeG0vbEtmVlNKMzJFaS9kWDFoQVZUbGE5NDVMdzV2MUhMVDlMb3BrOHh1bHFQSFJnQk5VNGdZcHozM0IyT3IzT3FIN0p3Wmc9PQ",
+      "WorkNode": "096d8a42-64fd-4da2-a5dd-18db1d24e25c",
+      "Fabric": "7a6be586-3fa8-452e-a76a-33078238226d"
+    },
+    "ChannelList": [
+      {
+        "ChannelType": 2,
+        "Channel": 0,
+        "Name": "R1",
+        "WorkLoad": "096d8a42-64fd-4da2-a5dd-18db1d24e25c",
+        "ProducerName": "AMPP-EDGE-01 : CP"
+      }
+    ]
+  },
+  "ControlConfigData": {
+    "RecorderSetting": {
+      "GangPort": 1,
+      "DefaultName": "Recoder_Tamp",
+      "DefaultFolder": "D:\\Output",
+      "RecordOffset": 1
+    },
+    "PlayerSetting": {
+      "GangPort": 1
+    },
+    "MediaViewSetting": {
+      "Url": null,
+      "ApiKey": null,
+      "WorkLoad": null
+    }
+  },
+  "HotKeyConfigData": {
+    "HotKeys": []
+  }
+}

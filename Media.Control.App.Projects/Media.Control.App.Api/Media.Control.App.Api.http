@@ -1,0 +1,6 @@
+@Media.Control.App.Api_HostAddress = https://localhost:5050
+
+GET {{Media.Control.App.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

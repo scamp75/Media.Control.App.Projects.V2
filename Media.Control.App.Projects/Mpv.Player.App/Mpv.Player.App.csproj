@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>False</UseWindowsForms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Properties\Resources.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Ff.png" />
+    <None Remove="Resources\Next.png" />
+    <None Remove="Resources\Pause.png" />
+    <None Remove="Resources\Play.png" />
+    <None Remove="Resources\Rw.png" />
+    <None Remove="Resources\Start.png" />
+    <None Remove="Resources\Stop.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Next.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.5" />
+    <PackageReference Include="mpv" Version="0.28.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ShowMeTheXAML" Version="2.0.0" />
+    <PackageReference Include="ShowMeTheXAML.AvalonEdit" Version="2.0.0" />
+    <PackageReference Include="ShowMeTheXAML.MSBuild" Version="2.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Ff.png" />
+    <Resource Include="Resources\Pause.png" />
+    <Resource Include="Resources\Play.png" />
+    <Resource Include="Resources\Rw.png" />
+    <Resource Include="Resources\Start.png" />
+    <Resource Include="Resources\Stop.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MpvNet\MpvNet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="dll\" />
+  </ItemGroup>
+
+</Project>

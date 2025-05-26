@@ -1,0 +1,227 @@
+﻿<Window x:Class="Media.Control.App.ManagerBa.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:materialDesignConverters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
+            
+        xmlns:local="clr-namespace:Media.Control.App.ManagerBa"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual" Top="0" Left="0"
+        Title="MainWindow" Height="45" 
+        Background="Transparent"
+        AllowsTransparency="True" 
+        BorderBrush="Transparent"
+        BorderThickness="0"
+        TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" >
+
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.RadioButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.SplitButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+
+            <Storyboard x:Key="HideWindowStoryboard">
+                <DoubleAnimation Storyboard.TargetProperty="Top"
+                      From="0" To="-500" Duration="0:0:0.5"/>
+            </Storyboard>
+
+            <Storyboard x:Key="ShowWindowStoryboard">
+                <DoubleAnimation Storyboard.TargetProperty="Top"
+                      From="-500" To="0" Duration="0:0:0.5"/>
+            </Storyboard>
+            
+            <Style x:Key="FlatRoundedToggleButtonStyle" TargetType="ToggleButton"
+                    BasedOn="{StaticResource  MaterialDesignActionDarkToggleButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Border"
+                            Background="{TemplateBinding  Background}"
+                            BorderBrush="{TemplateBinding  Background}"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            SnapsToDevicePixels="True">
+                                <ContentPresenter HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          RecognizesAccessKey="True" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="#FF373734" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#FFCCCCCC" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <!-- 토글이 켜졌을 때의 배경색 및 테두리 변경 -->
+                                    <Setter TargetName="Border" Property="Background" Value="#FF232121 " />
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="#FF373734" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.7" />
+                                    <Setter TargetName="Border" Property="Background" Value="#FF232121 " />
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="#FF373734" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+            <!--<BitmapImage x:Key="LogoIcon" UriSource="resources/mca_log.png" />-->
+            <BitmapImage x:Key="LogoIcon" UriSource="pack://application:,,,/Resources/mca_log.png"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid >
+
+        <Border
+            Background ="{DynamicResource MaterialDesign.Brush.Background}"
+            CornerRadius="5" BorderThickness="0"
+            BorderBrush="{DynamicResource MaterialDesignDarkSeparatorBackground}">
+            <StackPanel Orientation="Horizontal">
+                
+                <StackPanel.Resources>
+                    <system:Double x:Key="IconSize">18</system:Double>
+                    <system:Double x:Key="ButtonWidth">24</system:Double>
+                </StackPanel.Resources>
+
+                <Grid Width="{Binding MainBarWidth}">
+                    <Grid.ColumnDefinitions>
+                        <!--0-->
+                        <ColumnDefinition Width="50"/>  
+                        <!--1-->
+                        <ColumnDefinition Width="200"/>
+                        <!--2-->
+                        <ColumnDefinition Width="180"/>
+                        <!--3-->
+                        <ColumnDefinition Width="100"/>
+                        
+                        
+                        <!--4-->
+                        <ColumnDefinition Width="85"/><!--5-->
+                        <ColumnDefinition Width="85"/><!--6-->
+                        <ColumnDefinition Width="85"/><!--7-->
+                        <ColumnDefinition Width="85"/><!--8-->
+                        
+                        <ColumnDefinition Width="85"/><!--9-->
+                        <ColumnDefinition Width="85"/><!--10-->
+                        <ColumnDefinition Width="85"/><!--11-->
+                        <ColumnDefinition Width="95"/><!--12-->
+                        <ColumnDefinition Width="*"/><!--13-->
+                        <ColumnDefinition Width="33"/> <!--14-->
+                        <ColumnDefinition Width="33"/><!--15-->
+                        <ColumnDefinition Width="15"/><!--16-->
+                        <!--<ColumnDefinition Width="50"/>-->
+                        <ColumnDefinition Width="33"/><!--17-->
+                    </Grid.ColumnDefinitions>
+
+                    <!--<Image Grid.Column ="0" Source="{StaticResource LogoIcon}" Margin="2,0,0,2" Width="40" Height="40" HorizontalAlignment="Center"/>-->
+                    <Image x:Name="logImage" Grid.Column ="0" Margin="2,0,0,2" Width="40" Height="40" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column ="1" Text="Media Control App" FontSize="15" FontWeight="Bold" Margin="4,11,16,9" Foreground="OrangeRed" />
+
+                    
+                    <ToggleButton x:Name="butChanel1" Tag="Channel1"   Command="{Binding Command_ChannelRun}" Grid.Column="4" Width="80" Content="Chanel1" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25" 
+                         Style="{StaticResource FlatRoundedToggleButtonStyle}" Click="butChanel_Click"/>
+                    <ToggleButton x:Name="butChanel2"  Tag="Channel2" Command="{Binding Command_ChannelRun}" Grid.Column="5" Width="80" Content="Chanel2" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25" 
+                             Style="{StaticResource FlatRoundedToggleButtonStyle}" Click="butChanel_Click"/>
+
+                    <ToggleButton x:Name="butChanel3"  Tag="Channel3" Command="{Binding Command_ChannelRun}" Grid.Column="6" Width="80" Content="Chanel3" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25" 
+                           Style="{StaticResource FlatRoundedToggleButtonStyle}" Click="butChanel_Click" />
+
+                    <ToggleButton x:Name="butChanel4"  Tag="Channel4" Command="{Binding Command_ChannelRun}" Grid.Column="7" Width="80" Content="Chanel4" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25"
+                               Style="{StaticResource FlatRoundedToggleButtonStyle}" Click="butChanel_Click"/>
+                    <!--4-->   
+                    <Button x:Name="butAllRun" Command="{Binding Command_AllRun}" Grid.Column="8" Width="80" Content="All Run" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        Style="{StaticResource MaterialDesignFlatLightButton}"/>
+                    <Button x:Name="butAllClose" Command ="{Binding Command_AllKill}"  Grid.Column="9" Width="100" Content="All Close" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        Style="{StaticResource MaterialDesignFlatLightButton}"/>
+                    <Button x:Name="butPosition" Command="{Binding Command_Position}" Grid.Column="10" Width="80" Content="Position" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        Style="{StaticResource MaterialDesignFlatLightButton}"/>
+                    <Button x:Name="butMeidaview" Command="{Binding Command_ShowMediaView}" Grid.Column="11" Width="100" Content="MediaView" FontSize="12" FontWeight="Bold" Margin="2,15,2,0" Height="25" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        Style="{StaticResource MaterialDesignFlatLightButton}"/>
+
+
+
+
+                    <Button Grid.Column="13" Height="30" Width ="30"
+                      Style="{StaticResource   MaterialDesignIconButton}"  Command="{Binding Comand_ShowConfiogView}"
+                      IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                      ToolTip="Icon" >
+                        <materialDesign:PackIcon
+                            Width="{StaticResource IconSize}"
+                            Height="{StaticResource IconSize}"
+                            Kind="Cogs" />
+                    </Button>
+
+                    <Button Grid.Column="14" Height="30" Width="30"
+                          Style="{StaticResource   MaterialDesignIconButton}"  Command="{Binding Command_ShowLogView}"
+                          IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                          ToolTip="Icon" >
+                        <materialDesign:PackIcon
+                                Width="{StaticResource IconSize}"
+                                Height="{StaticResource IconSize}"
+                                Kind="Bell" />
+                    </Button>
+
+                    <!--<ToggleButton x:Name="butMin" Grid.Column="12" IsChecked="{Binding IsMin}"
+                          Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                          ToolTip="최소화">
+                                <materialDesign:PackIcon
+                                    Kind="Pin" RenderTransformOrigin=".5,.5">
+                                      <materialDesign:PackIcon.RenderTransform>
+                                            <RotateTransform Angle="45" />
+                                                </materialDesign:PackIcon.RenderTransform>
+                                            </materialDesign:PackIcon>
+                                            <materialDesign:ToggleButtonAssist.OnContent>
+                                             <materialDesign:PackIcon Kind="Pin" />
+                                </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>-->
+
+                    <!--<Button Grid.Column="12" Height="30" Width="30"
+                          Style="{StaticResource   MaterialDesignIconButton}"  
+                          IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                          ToolTip="최소화" 
+                          Click="butMin_Click"> 
+                        <materialDesign:PackIcon
+                                Width="{StaticResource IconSize}"
+                                Height="{StaticResource IconSize}"
+                                Kind="{Binding MinImage}" />
+                    </Button>-->
+
+                    <Button Grid.Column="17" Width="30" Height="30"
+                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                        Style="{StaticResource MaterialDesignIconButton}"
+                        ToolTip="종료"
+                        Command="{Binding Command_Close}">
+                        <materialDesign:PackIcon
+                            Width="{StaticResource IconSize}"
+                            Height="{StaticResource IconSize}"
+                            Kind="Close" />
+                    </Button>
+
+                 
+                </Grid>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
