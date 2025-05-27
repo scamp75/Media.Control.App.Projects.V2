@@ -28,10 +28,10 @@ namespace Media.Control.App.Api
             });
 
             // HTTPS 리디렉션 설정
-            services.AddHttpsRedirection(options =>
-            {
-                options.HttpsPort = 5050; // HTTPS 포트 설정
-            });
+            //services.AddHttpsRedirection(options =>
+            //{
+            //    options.HttpsPort = 5050; // HTTPS 포트 설정
+            //});
 
             // SignalR 서비스 등록
             services.AddSignalR();

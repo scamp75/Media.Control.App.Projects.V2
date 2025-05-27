@@ -31,6 +31,8 @@ namespace Media.Control.App.LogView.ViewModel
 
         private CancellationTokenSource cancellationTokenSource;
 
+        public string MedaiUrl { get; set; } = string.Empty;    
+
         private bool autoRefresh { get; set; } = true;  
 
         public bool AutoRefresh { get => autoRefresh; set { autoRefresh = value; OnPropertyChanged(); }
@@ -103,11 +105,6 @@ namespace Media.Control.App.LogView.ViewModel
         {
             _mainWindow = mainWindow;
 
-            ApiConnecter = new MediaApiConnecter("loghub");
-            ApiConnecter.Connection();
-            
-            ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend;
-
             Command_Search = new RelayCommand(CommandSearch);
             Command_Click = new RelayCommand(CommandClik);
 
@@ -117,6 +114,14 @@ namespace Media.Control.App.LogView.ViewModel
 
             LogDataList = new ObservableCollection<LogData>();
 
+        }
+
+        public void SetLoggApi()
+        {
+            ApiConnecter = new MediaApiConnecter("loghub");
+            ApiConnecter.IpAddress = MedaiUrl; // Set the IP address from the main window
+            ApiConnecter.Connection();
+            ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend;
         }
 
         private void ApiConnecter_DoHubEventSend(string message)

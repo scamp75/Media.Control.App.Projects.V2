@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Windows.Media.Animation;
 using Application = System.Windows.Application;
 using System.Reflection.Metadata;
+using Media.Control.App.RP.Model.Config;
 
 namespace Media.Control.App.RP.Model
 {
@@ -30,6 +31,7 @@ namespace Media.Control.App.RP.Model
         public MediaApi()
         {
             ApiConnecter = new MediaApiConnecter("mediahub");
+            ApiConnecter.IpAddress = SystemConfigDataStatic.ControlConfigData.MediaViewSetting.Url;
             ApiConnecter.Connection();
             ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend;
 

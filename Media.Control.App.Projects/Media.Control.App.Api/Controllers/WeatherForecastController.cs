@@ -111,9 +111,16 @@ namespace Media.Control.App.Api.Controllers
             return mediaService.GetMediaDataInfo(id);
         }
 
+        // GET : api/MediaInfo (모든 미디어 조회)
+        [HttpGet]
+        public IEnumerable<MediaDataInfo> GetMediaInfo()
+        {
+            return mediaService.GetMediaDate();
+        }
+
 
         // GET: api/MediaInfo/{id} (특정 미디어 조회)
-        [HttpGet]
+        [HttpGet("{createDate} {iscreateDate} {channel} {title}")]
         public IEnumerable<MediaDataInfo> GetMediaInfo(string createDate, bool iscreateDate, string channel, string title)
         {
             return mediaService.GetMediaDate(createDate, iscreateDate, channel, title);   

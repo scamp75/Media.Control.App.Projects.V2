@@ -12,14 +12,16 @@ namespace Media.Control.App.LogView.Model
 {
     public class MediaApiConnecter
     {
-        private const string ApiUrlMedia = "https://localhost:5050/api/";
+        private string ApiUrlMedia = "http://localhost:5050/api/";
         public HttpClient client { get; set; }
         private HubConnection connection = null;
 
         public delegate void HubConnectHandleAge(string message);
         public event HubConnectHandleAge DoHubEventSend;
 
-        private string Hub { get; set; }   
+        private string Hub { get; set; }
+
+        public string IpAddress { get; set; } = string.Empty;
 
         public MediaApiConnecter(string hub)
         {
@@ -28,6 +30,9 @@ namespace Media.Control.App.LogView.Model
 
         public HttpClient Client()
         {
+            if (IpAddress != string.Empty)
+                ApiUrlMedia = $"http://{IpAddress}:5050/api/";
+
             client = new HttpClient { BaseAddress = new Uri(ApiUrlMedia) };
             return client;
         }
@@ -35,7 +40,7 @@ namespace Media.Control.App.LogView.Model
         public HubConnection Connection()
         {
             connection = new HubConnectionBuilder()
-                .WithUrl($"https://localhost:5050/{Hub}")  // SignalR Hub 경로
+                .WithUrl($"http://{IpAddress}:5050/{Hub}")  // SignalR Hub 경로
                 .Build();
 
 

@@ -32,6 +32,8 @@ namespace Media.Control.App.MeidaBrowser.ViewModel
         public ObservableCollection<MediaDataInfo> MediaDataList {  get; set; }
         public ObservableCollection<string> ChannelLists { get; set; }
 
+        public string MedaiUrl { get; set; } = "http://localhost:5050/api/MediaInfo";
+
         private double titleWidth { get; set; } = 800;
 
         public double TitleWidth { get => titleWidth; set { titleWidth = value; OnPropertyChanged(nameof(TitleWidth)); } }
@@ -215,11 +217,6 @@ namespace Media.Control.App.MeidaBrowser.ViewModel
             {
                 mainWindow = window;
 
-                ApiConnecter = new MediaApiConnecter("mediahub");
-                ApiConnecter.Connection();
-                ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend1; ;
-
-
                 MpvControlModel = new PlayerControlModel(mainWindow);
 
                 MpvControlModel.TimecodeChanged += MpvControlModel_TimecodeChanged;
@@ -248,6 +245,17 @@ namespace Media.Control.App.MeidaBrowser.ViewModel
                 System.Windows.Forms.MessageBox.Show(ex.Message);
             }
             
+        }
+
+        public void SetMediaApi()
+        {
+
+            ApiConnecter = new MediaApiConnecter("mediahub");
+            ApiConnecter.IpAddress = MedaiUrl; // Set the IP address from the main window
+            ApiConnecter.Connection();
+            ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend1;
+
+
         }
 
         private void MpvControlModel_TimecodeChanged(object? sender, long e)

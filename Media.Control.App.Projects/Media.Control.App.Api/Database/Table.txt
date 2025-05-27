@@ -11,6 +11,7 @@ CREATE TABLE `logdatatb` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3912 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
+
 -- mediaservice.mediainfotb definition
 
 CREATE TABLE `mediainfotb` (
@@ -29,9 +30,8 @@ CREATE TABLE `mediainfotb` (
   `Proxy` varchar(300) DEFAULT NULL,
   `Image` varchar(300) DEFAULT NULL,
   `Path` varchar(300) DEFAULT NULL,
+  `Fps` int(11) DEFAULT NULL,
   `Des` varchar(300) DEFAULT NULL,
+  `State` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`Num`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
-
-
-CREATE DATABASE `mediaservice` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
+) ENGINE=InnoDB AUTO_INCREMENT=375 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;

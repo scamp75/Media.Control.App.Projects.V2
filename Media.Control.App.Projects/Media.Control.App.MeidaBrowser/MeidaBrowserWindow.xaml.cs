@@ -29,16 +29,21 @@ namespace Media.Control.App.MeidaBrowser
         private MeidaBrowserViewModel mainWindowViewModel = null;
     
         private bool _isDragging = false;
+
+        public string MedaiUrl { get; set; } = string.Empty;
         public MainWindow()
         {
             InitializeComponent();
-            
+
             mainWindowViewModel = new MeidaBrowserViewModel(this);
             this.DataContext = mainWindowViewModel;
 
 
             this.MediaListControl.ButtonClicked += MediaListControl_ButtonClicked;
-            this.MediaListControl.ButtonMouseDoubleClicked += MediaListControl_ButtonMouseDoubleClicked; ;
+            this.MediaListControl.ButtonMouseDoubleClicked += MediaListControl_ButtonMouseDoubleClicked;
+
+            this.MediaListControl.MenuItemClicked += MediaListControl_MenuItemClicked;
+
             // 이미지 경로 설정
             var imagePath = "pack://application:,,,/Resources/browser.png";
             // BitmapImage 생성
@@ -74,13 +79,16 @@ namespace Media.Control.App.MeidaBrowser
                 if(jsonFromFile != string.Empty)
                 {
                     var jObject = JObject.Parse(jsonFromFile);
+                    
+                    var mediaUrl = jObject["ControlConfigData"]?["MediaViewSetting"]?["Url"];
+                    mainWindowViewModel.MedaiUrl = mediaUrl?.ToString() ?? string.Empty;
+
                     var channelList = jObject["ChannelConfigData"]?["ChannelList"];
 
                     if (channelList != null)
                     {
                         foreach (var item in channelList)
                         {
-
                             var type = item["ChannelType"]?.ToString();
                             if(type == "2")
                             {
@@ -92,8 +100,7 @@ namespace Media.Control.App.MeidaBrowser
                     }
                 }
 
-
-                this.MediaListControl.MenuItemClicked += MediaListControl_MenuItemClicked;
+                mainWindowViewModel.SetMediaApi();
 
                 // JSON 파일을 읽어와서 SystemConfigData 객체로 변환
 

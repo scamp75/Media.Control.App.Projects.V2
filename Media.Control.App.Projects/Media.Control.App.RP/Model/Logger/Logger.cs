@@ -1,8 +1,10 @@
 ﻿
+using Media.Control.App.RP.Model.Config;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -26,6 +28,7 @@ namespace Media.Control.App.RP.Model.Logger
         public Logger() 
         {
             ApiConnecter = new MediaApiConnecter("loghub");
+            ApiConnecter.IpAddress = SystemConfigDataStatic.ControlConfigData.MediaViewSetting.Url;
             ApiConnecter.Connection();
             ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend;
 

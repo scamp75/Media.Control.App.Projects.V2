@@ -16,6 +16,7 @@ using Media.Control.App.LogView.Model;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace Media.Control.App.LogView
 {
@@ -44,15 +45,39 @@ namespace Media.Control.App.LogView
             {
                 args = new string[4];
                 args = new string[] { "", "Create", "0", "0" };
+
             }
             if (args != null && args.Length > 1)
+            {
+
+                if (args[1] == "Create")
+                {
+                    Left = Convert.ToDouble(args[2]);
+                    Top = Convert.ToDouble(args[3]);
+                }
+
+                string jsonFromFile = string.Empty;
+                string jsonpath = args[4];
+                if (System.IO.File.Exists(jsonpath))
+                    jsonFromFile = System.IO.File.ReadAllText(@jsonpath);
+
+                if (jsonFromFile != string.Empty)
+                {
+                    var jObject = JObject.Parse(jsonFromFile);
+
+                    var mediaUrl = jObject["ControlConfigData"]?["MediaViewSetting"]?["Url"];
+                    mainWindowViewModel.MedaiUrl = mediaUrl?.ToString() ?? string.Empty;
+                }
+
+                mainWindowViewModel.SetLoggApi();
+            }
+            else
             {
                 Left = Convert.ToDouble(args[2]);
                 Top = Convert.ToDouble(args[3]);
             }
 
             ShowWindows();
-
             StartPipeServer();
         }
 

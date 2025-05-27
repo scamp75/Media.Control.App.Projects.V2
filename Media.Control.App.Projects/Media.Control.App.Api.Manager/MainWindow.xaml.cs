@@ -256,7 +256,7 @@ namespace Media.Control.App.Api.Manager
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseUrls("https://localhost:5050"); // 서비스 URL
+                    webBuilder.UseUrls("http://0.0.0.0:5050"); // 서비스 URL
                     webBuilder.UseStartup<Startup>(); // Startup 클래스 지정
                 });
         }
