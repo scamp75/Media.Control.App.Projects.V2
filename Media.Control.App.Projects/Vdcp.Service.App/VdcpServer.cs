@@ -12,7 +12,7 @@ namespace Vdcp.Service.App
     public class VdcpServer
     {
         private Thread thread = null;
-        private bool thrStart = false;
+        public bool thrStart { get; set; } = false;
         public string PortNmae { get; set; }
         public VdcpService vdcpService = null;
         List<string> clipList = null;
@@ -27,7 +27,6 @@ namespace Vdcp.Service.App
 
             thread = new Thread(new ThreadStart(DoVdcpWork));
             thread.Start();
-            thrStart = true;
         }
 
         private void VdcpService_VdcpActionEvent(VdcpEventArgsDefine commandData)
@@ -52,9 +51,9 @@ namespace Vdcp.Service.App
                 case EumCommandKey.UNFREEZE:
                     break;
                 case EumCommandKey.EEMODE:
-
                     break;
                 case EumCommandKey.RENAMEID:
+                    //ReName(commandData.ClipName);
                     break;
                 case EumCommandKey.EXRENAMEID:
                     break;
@@ -143,14 +142,21 @@ namespace Vdcp.Service.App
 
         public void Close()
         {
+            thrStart =false;
             vdcpService.Close();
+
+
+            if (thread !=null)
+            {
+                thread.Abort();
+                Thread.Sleep(300);
+                thread = null;
+            }
         }
 
 
         private void List()
         {
-
-
             vdcpService.List(clipList, SendType.Normal);
         }
 

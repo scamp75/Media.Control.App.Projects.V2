@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeckLinkDirectShowLib", "De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vdcp.Service.App", "Vdcp.Service.App\Vdcp.Service.App.csproj", "{5EABB9EA-54FA-479A-8CA1-34E7EF658230}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vdcp.Service.App.Manager", "Vdcp.Service.App.Manager\Vdcp.Service.App.Manager.csproj", "{6DAA8519-BDD4-4C1B-9267-F310484E4795}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{5EABB9EA-54FA-479A-8CA1-34E7EF658230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EABB9EA-54FA-479A-8CA1-34E7EF658230}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EABB9EA-54FA-479A-8CA1-34E7EF658230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DAA8519-BDD4-4C1B-9267-F310484E4795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DAA8519-BDD4-4C1B-9267-F310484E4795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DAA8519-BDD4-4C1B-9267-F310484E4795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DAA8519-BDD4-4C1B-9267-F310484E4795}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

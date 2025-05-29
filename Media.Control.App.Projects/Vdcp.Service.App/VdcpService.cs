@@ -28,10 +28,16 @@ namespace Vdcp.Service.App
         #region 생성 및 초기화
         public VdcpService(string name)
         {
-            Name = name;
-            VdcpConnect = new SerialConnecterAdapter();
-            VdcpConnect.EventActionCallbacks += VdcpConnect_EventActionCallbacks;
+            try
+            {
+                Name = name;
+                VdcpConnect = new SerialConnecterAdapter();
+                VdcpConnect.EventActionCallbacks += VdcpConnect_EventActionCallbacks;
+            }
+            catch(Exception ex)
+            {
 
+            }
         }
 
         private void VdcpConnect_EventActionCallbacks(VdcpEventArgsDefine commandData)
