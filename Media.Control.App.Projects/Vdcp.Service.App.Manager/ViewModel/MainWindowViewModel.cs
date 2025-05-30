@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using VdcpService.lib;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace Vdcp.Service.App.Manager.ViewModel
 {
@@ -31,8 +32,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
         private string bacePath { get; set; }
             = AppDomain.CurrentDomain.BaseDirectory;
-            //System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VdcpService");
-
+        //System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VdcpService");
+        private ObservableCollection<PortDataInfo> PortDataInfoList;
         public bool isServiceRunning { get; set; } = false;
 
         private bool _IsEnabledCom { get; set; } = true;
@@ -162,24 +163,30 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
             vdcpServerViewModels = new List<VdcpServerViewModel>();
 
+            PortDataInfoList = new ObservableCollection<PortDataInfo>();
+
+            if(!File.Exists($"{bacePath}ComConfig.json"))
+                return;
+
+
             string json = System.IO.File.ReadAllText($"{bacePath}ComConfig.json");
-            List<ComConfig> config = System.Text.Json.JsonSerializer.Deserialize<List<ComConfig>>(json);
+            PortDataInfoList = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<PortDataInfo>>(json);
 
             EnuPortType type = EnuPortType.Serial; // 기본값은 Serial로 설정
             
             if (SelectedComPort =="Udp")
                 type = EnuPortType.Udp;
-            
 
-            foreach (var item in config)
+
+            foreach (var item in PortDataInfoList)
             {
-                switch (item.ComPort)
+                switch (item.PortName)
                 {
                     case "COM3":
                         IsCom3 = item.IsEnabled;
                         if (IsCom3)
                         {
-                            vdcpServerViewModel3 = new VdcpServerViewModel("ComPort3", "COM3");
+                            vdcpServerViewModel3 = new VdcpServerViewModel(item);
                             vdcpServerViewModel3.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM3", 50000, true);
                             vdcpServerViewModels.Add(vdcpServerViewModel3);
                         }
@@ -188,7 +195,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         IsCom4 = item.IsEnabled;
                         if (IsCom4)
                         {
-                            vdcpServerViewModel4 = new VdcpServerViewModel("ComPort4", "COM4");
+                            vdcpServerViewModel4 = new VdcpServerViewModel(item);
                             vdcpServerViewModel4.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM4", 50001, true);
                             vdcpServerViewModels.Add(vdcpServerViewModel4);
                         }
@@ -197,7 +204,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         IsCom5 = item.IsEnabled;
                         if (IsCom5)
                         {
-                            vdcpServerViewModel5 = new VdcpServerViewModel("ComPort5", "COM5");
+                            vdcpServerViewModel5 = new VdcpServerViewModel(item);
                             vdcpServerViewModel5.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM5", 50002, true);
                             vdcpServerViewModels.Add(vdcpServerViewModel5);
                         }
@@ -206,7 +213,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         IsCom6 = item.IsEnabled;
                         if (IsCom6)
                         {
-                            vdcpServerViewModel6 = new VdcpServerViewModel("ComPort6", "COM6");
+                            vdcpServerViewModel6 = new VdcpServerViewModel(item);
                             vdcpServerViewModel6.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM6", 50003, true);
                             vdcpServerViewModels.Add(vdcpServerViewModel6);
                         }
@@ -215,7 +222,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         IsCom7 = item.IsEnabled;
                         if (IsCom7)
                         {
-                            vdcpServerViewModel7 = new VdcpServerViewModel("ComPort7", "COM7");
+                            vdcpServerViewModel7 = new VdcpServerViewModel(item);
                             vdcpServerViewModel7.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM7", 50004, true);
                             vdcpServerViewModels.Add(vdcpServerViewModel7);
                         }
@@ -224,7 +231,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         IsCom8 = item.IsEnabled;
                         if (IsCom8)
                         {
-                            vdcpServerViewModel8 = new VdcpServerViewModel("ComPort8", "COM8");
+                            vdcpServerViewModel8 = new VdcpServerViewModel(item);
                             vdcpServerViewModel8.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM8", 50005, true);
                             vdcpServerViewModels.Add(vdcpServerViewModel8);
                         }
@@ -233,7 +240,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         IsCom9 = item.IsEnabled;
                         if (IsCom9)
                         {
-                            vdcpServerViewModel9 = new VdcpServerViewModel("ComPort9", "COM9");
+                            vdcpServerViewModel9 = new VdcpServerViewModel(item);
                             vdcpServerViewModel9.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM9", 50006, true);
                             vdcpServerViewModels.Add(vdcpServerViewModel9);
                         }
@@ -326,22 +333,30 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
         public void SaveConfig()
         {
-            // josn 파일로 저장하는 로직을 구현합니다.
-            List<ComConfig> comConfig = new List<ComConfig>();
 
-            comConfig.Add(new ComConfig { ComPort = "COM3", IsEnabled = IsCom3 });
-            comConfig.Add(new ComConfig { ComPort = "COM4", IsEnabled = IsCom4 });
-            comConfig.Add(new ComConfig { ComPort = "COM5", IsEnabled = IsCom5 });
-            comConfig.Add(new ComConfig { ComPort = "COM6", IsEnabled = IsCom6 });
-            comConfig.Add(new ComConfig { ComPort = "COM7", IsEnabled = IsCom7 });
-            comConfig.Add(new ComConfig { ComPort = "COM8", IsEnabled = IsCom8 });
-            comConfig.Add(new ComConfig { ComPort = "COM9", IsEnabled = IsCom9 });
+            if(File.Exists( $"{bacePath}ComConfig.json"))
+            {
+                string jsonString = System.IO.File.ReadAllText($"{bacePath}ComConfig.json");
+                PortDataInfoList = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<PortDataInfo>>(jsonString);
 
-            // JSON 직렬화
-            string jsonString = System.Text.Json.JsonSerializer.Serialize(comConfig, new JsonSerializerOptions { WriteIndented = true });
+            }
 
-            // 파일로 저장
-            System.IO.File.WriteAllText($"{bacePath}ComConfig.json", jsonString);
+            //// josn 파일로 저장하는 로직을 구현합니다.
+            //List<ComConfig> comConfig = new List<ComConfig>();
+
+            //comConfig.Add(new ComConfig { ComPort = "COM3", IsEnabled = IsCom3 });
+            //comConfig.Add(new ComConfig { ComPort = "COM4", IsEnabled = IsCom4 });
+            //comConfig.Add(new ComConfig { ComPort = "COM5", IsEnabled = IsCom5 });
+            //comConfig.Add(new ComConfig { ComPort = "COM6", IsEnabled = IsCom6 });
+            //comConfig.Add(new ComConfig { ComPort = "COM7", IsEnabled = IsCom7 });
+            //comConfig.Add(new ComConfig { ComPort = "COM8", IsEnabled = IsCom8 });
+            //comConfig.Add(new ComConfig { ComPort = "COM9", IsEnabled = IsCom9 });
+
+            //// JSON 직렬화
+            //string jsonString = System.Text.Json.JsonSerializer.Serialize(comConfig, new JsonSerializerOptions { WriteIndented = true });
+
+            //// 파일로 저장
+            //System.IO.File.WriteAllText($"{bacePath}ComConfig.json", jsonString);
 
         }
 

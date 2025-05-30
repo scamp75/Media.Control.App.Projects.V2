@@ -750,7 +750,7 @@ namespace VdcpService.lib
                 }
 
 
-                Logger.File_Listener.Location = $"PortLog";
+                Logger.File_Listener.Location = $"ComLogger";
                 Logger.File_Listener.BaseFileName = Name;
 
                 // 이어쓰기, 파일크기 롤링, 하루 단위 롤링 설정 (값이 0이면 롤링 하지 않음)

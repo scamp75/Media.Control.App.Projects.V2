@@ -195,7 +195,7 @@ namespace Vdcp.Service.App.Manager
                 mainWindowViewModel.isServiceRunning = true;
                 mainWindowViewModel.IsEnabledCom = false;
                 mainWindowViewModel.Start();
-                mainWindowViewModel.SaveConfig();
+                //mainWindowViewModel.SaveConfig();
                 //}
             }
             catch (Exception ex)
@@ -212,6 +212,18 @@ namespace Vdcp.Service.App.Manager
         private void butConfig_Click(object sender, RoutedEventArgs e)
         {
             var form = new ConfigWindwos();
+
+            var screenWidth = SystemParameters.PrimaryScreenWidth;  // 화면 너비
+            var screenHeight = SystemParameters.PrimaryScreenHeight; // 화면 높이
+
+            // 창의 너비와 높이를 가져와서 우측 하단 좌표를 계산
+            double windowWidth = this.Width;
+            double windowHeight = this.Height;
+
+            // 창의 좌표 설정: 우측 하단
+            form.Left = screenWidth - 3 - form.Width;
+            form.Top = screenHeight - 250 - 3 - form.Height;
+
             form.Show(); // 또는 ShowDialog() - 모달로 열기
         }
     }

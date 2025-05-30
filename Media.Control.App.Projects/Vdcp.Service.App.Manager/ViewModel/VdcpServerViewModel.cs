@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vdcp.Service.App.Manager.Model;
 using VdcpService.lib;
 
 namespace Vdcp.Service.App.Manager.ViewModel
@@ -13,6 +15,13 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
         private VdcpServer vdcpServer = null;
 
+        private string _type = "Player";
+        public string Type
+        {
+            get { return _type; }
+            set { _type = value; OnPropertyChanged(nameof(Type)); }
+        }
+
         private string _serverName;
         public string ServerName
         {
@@ -20,20 +29,61 @@ namespace Vdcp.Service.App.Manager.ViewModel
             set { _serverName = value; OnPropertyChanged(nameof(ServerName)); }
         }
 
-        private string _ComNumber;
-        public string ComNumber
+        private string _PortName;
+        public string PortName
         {
-            get { return _ComNumber; }
-            set { _ComNumber = value; OnPropertyChanged(nameof(ComNumber)); }
+            get { return _PortName; }
+            set { _PortName = value; OnPropertyChanged(nameof(PortName)); }
         }
 
-
-        public VdcpServerViewModel( string serverName, string comNumber)
+        private string _Macros1 { get; set; } = string.Empty;
+        public string Macros1
         {
-            ServerName = serverName;
-            ComNumber = comNumber;
-            vdcpServer = new VdcpServer(comNumber);
-            
+            get { return _Macros1; }
+            set { _Macros1 = value; OnPropertyChanged(nameof(Macros1)); }
+        }
+
+        private string _Macros2 { get; set; } = string.Empty;
+        public string Macros2
+        {
+            get { return _Macros2; }
+            set { _Macros2 = value; OnPropertyChanged(nameof(Macros2)); }
+        }
+
+        private int _selectPort = 0;
+        public int SelectPort
+        {
+            get { return _selectPort; }
+            set { _selectPort = value; OnPropertyChanged(nameof(SelectPort)); }
+        }
+
+        private string _workLoad1 = string.Empty;
+
+        public string WorkLoad1
+        {
+            get { return _workLoad1; }
+            set { _workLoad1 = value; OnPropertyChanged(nameof(WorkLoad1)); }
+        }
+
+        private string _workLoad2 = string.Empty;
+        public string WorkLoad2
+        {
+            get { return _workLoad2; }
+            set { _workLoad2 = value; OnPropertyChanged(nameof(WorkLoad2)); }
+        }
+
+        public VdcpServerViewModel(PortDataInfo portData)
+        {
+            Type = portData.Type;
+            ServerName = $"Port_{portData.PortName}";
+            PortName = portData.PortName;
+            SelectPort = Type != "Player" ? -portData.SelectPort : portData.SelectPort;
+            Macros1 = portData.Macros1;
+            Macros2 = portData.Macros2;
+            WorkLoad1 = portData.WorkLoad1;
+            WorkLoad2 = portData.WorkLoad2;
+
+            vdcpServer = new VdcpServer(PortName);
         }
 
         public bool Open( EnuPortType type, string address, int port, bool b)
@@ -60,6 +110,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
         {
             vdcpServer.thrStart = false;
         }
+
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;

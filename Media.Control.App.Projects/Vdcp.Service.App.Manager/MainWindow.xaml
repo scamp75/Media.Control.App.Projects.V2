@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Vdcp.Service.App.Manager"
         xmlns:conv="clr-namespace:Vdcp.Service.App.Manager.Model" 
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
            WindowStyle="None"
         Background="Transparent"

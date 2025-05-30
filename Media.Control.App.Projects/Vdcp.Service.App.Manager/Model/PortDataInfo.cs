@@ -11,11 +11,14 @@ namespace Vdcp.Service.App.Manager.Model
         public string PortName { get; set; }
         public string Type { get; set; }
         public int SelectPort { get; set; }
-        public string WorkNode1 { get; set; }
-        public string WorkNode2 { get; set; }
+
+        public string WorkLoad1 { get; set; }
+        public string WorkLoad2 { get; set; }
 
         public string Macros1 { get; set; }
         public string Macros2 { get; set; }
+
+        public bool IsEnabled { get; set; } = false;
 
     }
 }

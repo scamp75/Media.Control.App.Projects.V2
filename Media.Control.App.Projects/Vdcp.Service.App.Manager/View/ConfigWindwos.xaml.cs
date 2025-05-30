@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Vdcp.Service.App.Manager.ViewModel;
 
 namespace Vdcp.Service.App.Manager.View
 {
@@ -19,11 +20,14 @@ namespace Vdcp.Service.App.Manager.View
     /// </summary>
     public partial class ConfigWindwos : Window
     {
+        private ConfigWindwosViewModel _configWindwosViewModel;
+
         public ConfigWindwos()
         {
             InitializeComponent();
 
-            this.DataContext = new ViewModel.ConfigWindwosViewModel(this);
+            _configWindwosViewModel = new ViewModel.ConfigWindwosViewModel(this);
+            this.DataContext = _configWindwosViewModel;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -33,7 +37,7 @@ namespace Vdcp.Service.App.Manager.View
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            _configWindwosViewModel.ConfigLoad();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -42,6 +46,16 @@ namespace Vdcp.Service.App.Manager.View
             {
                 DragMove();
             }
+        }
+
+        private void CloaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            _configWindwosViewModel.ConfigSave();
         }
     }
 }
