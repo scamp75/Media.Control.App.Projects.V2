@@ -269,7 +269,6 @@
     <Compile Include="lib\VdcpLib\VdcpEventArgsDefine.cs" />
     <Compile Include="lib\VdcpLib\VdcpEventCallbackArg.cs" />
     <Compile Include="lib\VdcpLib\VdcpUdpAdapter.cs" />
-    <Compile Include="VdcpServer.cs" />
     <Compile Include="VdcpService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

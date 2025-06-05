@@ -12,6 +12,9 @@ namespace Vdcp.Service.App.Manager.Model
         public string Type { get; set; }
         public int SelectPort { get; set; }
 
+        public AmppConfig AmppConfig { get; set; } = null;
+        
+
         public string WorkLoad1 { get; set; }
         public string WorkLoad2 { get; set; }
 

@@ -18,6 +18,11 @@ namespace VdcpService.lib
         public EumEEMode EEMode { get; set; } = EumEEMode.Off;
         public string TimeCode { get; set; } = "00:00:00:00";
 
+        public string StatTime { get;set; } = "00:00:00:00";
+        public string StopTime { get; set; } = "00:00:00:00";
+
+        public string Duration { get; set; } = "00:00:00:00";
+
         public string NewName { get; set; }
         public string OldName { get; set; }
         public string ClipName { get; set; }
@@ -25,6 +30,13 @@ namespace VdcpService.lib
         public string sSom { get; set; }
         public string sEom { get; set; }
         public int Frames { get; set; }
+        public double Jog { get; set; } = 0.0;
+
+        public double Shuttle { get; set; } = 0.0;
+
+        public string Input { get; set; } = string.Empty;
+        public string FileName { get; set; } = string.Empty;
+
         public int Seconds { get; set; }
         public int iPortNum { get; set; }
         public int iValue1 { get; set; }

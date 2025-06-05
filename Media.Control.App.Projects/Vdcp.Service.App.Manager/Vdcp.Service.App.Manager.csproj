@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Ampp.Control.Lib\Ampp.Control.Lib.csproj" />
     <ProjectReference Include="..\Vdcp.Service.App\Vdcp.Service.App.csproj" />
   </ItemGroup>
 

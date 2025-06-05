@@ -13,13 +13,18 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.IO;
 
+
 namespace Vdcp.Service.App.Manager.ViewModel
 {
     public class MainWindowsViewModel : INotifyPropertyChanged
     {
         private readonly MainWindow mainWindow;
-        private MediaApiConnecter ApiConnecter { get; set; }
+        private MediAipModel MediaConnecter { get; set; } = null;
+
+        private LoggerModel LoggerConnecter { get; set; } = null;
+
         public string MedaiUrl { get; set; } = "http://localhost:5050/api/MediaInfo";
+        public string LoggerUrl { get; set; } = "http://localhost:5050/api/Logger";
 
         private List<VdcpServerViewModel> vdcpServerViewModels = null;
         private VdcpServerViewModel vdcpServerViewModel3 = null;
@@ -29,6 +34,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
         private VdcpServerViewModel vdcpServerViewModel7 = null;
         private VdcpServerViewModel vdcpServerViewModel8 = null;
         private VdcpServerViewModel vdcpServerViewModel9 = null;
+
+        private List<string> ClipList { get; set; } = new List<string>();
 
         private string bacePath { get; set; }
             = AppDomain.CurrentDomain.BaseDirectory;
@@ -153,7 +160,26 @@ namespace Vdcp.Service.App.Manager.ViewModel
                 }
             }
 
-            SetMediaApi();
+            MediaConnecter = new MediAipModel(MedaiUrl);
+            MediaConnecter.MediaApiConnecter.DoHubEventSend += MediaApiConnecter_DoHubEventSend;
+
+            MediaConnecter.GetMediaListAsync().ContinueWith(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                {
+                    task.Result.ForEach(media =>
+                    {
+                        ClipList.Add(media.Name);
+                    });
+                }
+                else
+                {
+                    // Handle error
+                    Console.WriteLine("Error fetching media list: " + task.Exception?.Message);
+                }
+            });
+
+            LoggerConnecter = new LoggerModel(LoggerUrl);
 
             ComPortTypeList = new ObservableCollection<string>()
             {
@@ -169,7 +195,11 @@ namespace Vdcp.Service.App.Manager.ViewModel
                 return;
 
 
-            string json = System.IO.File.ReadAllText($"{bacePath}ComConfig.json");
+            string json = System.IO.File.ReadAllText($"{bacePath}AmppConfig.json");
+            StaticSystemCofnig.AmppConfig = System.Text.Json.JsonSerializer.Deserialize<AmppConfig>(json);
+
+
+            json = System.IO.File.ReadAllText($"{bacePath}ComConfig.json");
             PortDataInfoList = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<PortDataInfo>>(json);
 
             EnuPortType type = EnuPortType.Serial; // 기본값은 Serial로 설정
@@ -180,6 +210,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
             foreach (var item in PortDataInfoList)
             {
+                item.AmppConfig = StaticSystemCofnig.AmppConfig;
+
                 switch (item.PortName)
                 {
                     case "COM3":
@@ -188,6 +220,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         {
                             vdcpServerViewModel3 = new VdcpServerViewModel(item);
                             vdcpServerViewModel3.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM3", 50000, true);
+                            vdcpServerViewModel3.ClipList = ClipList;
                             vdcpServerViewModels.Add(vdcpServerViewModel3);
                         }
                         break;
@@ -197,6 +230,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         {
                             vdcpServerViewModel4 = new VdcpServerViewModel(item);
                             vdcpServerViewModel4.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM4", 50001, true);
+                            vdcpServerViewModel4.ClipList = ClipList;
                             vdcpServerViewModels.Add(vdcpServerViewModel4);
                         }
                         break;
@@ -206,6 +240,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         {
                             vdcpServerViewModel5 = new VdcpServerViewModel(item);
                             vdcpServerViewModel5.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM5", 50002, true);
+                            vdcpServerViewModel5.ClipList = ClipList;
                             vdcpServerViewModels.Add(vdcpServerViewModel5);
                         }
                         break;
@@ -215,6 +250,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         {
                             vdcpServerViewModel6 = new VdcpServerViewModel(item);
                             vdcpServerViewModel6.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM6", 50003, true);
+                            vdcpServerViewModel6.ClipList = ClipList;
                             vdcpServerViewModels.Add(vdcpServerViewModel6);
                         }
                         break;
@@ -224,6 +260,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         {
                             vdcpServerViewModel7 = new VdcpServerViewModel(item);
                             vdcpServerViewModel7.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM7", 50004, true);
+                            vdcpServerViewModel7.ClipList = ClipList;
                             vdcpServerViewModels.Add(vdcpServerViewModel7);
                         }
                         break;
@@ -233,6 +270,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         {
                             vdcpServerViewModel8 = new VdcpServerViewModel(item);
                             vdcpServerViewModel8.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM8", 50005, true);
+                            vdcpServerViewModel8.ClipList = ClipList;
                             vdcpServerViewModels.Add(vdcpServerViewModel8);
                         }
                         break;
@@ -242,6 +280,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         {
                             vdcpServerViewModel9 = new VdcpServerViewModel(item);
                             vdcpServerViewModel9.Open(type, SelectedComPort == "Udp" ? IpAddress : "COM9", 50006, true);
+                            vdcpServerViewModel9.ClipList = ClipList;
                             vdcpServerViewModels.Add(vdcpServerViewModel9);
                         }
                         break;
@@ -250,69 +289,32 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
         }
 
-        public void SetMediaApi()
+        private void MediaApiConnecter_DoHubEventSend(string type, string message)
         {
-            ApiConnecter = new MediaApiConnecter("mediahub");
-            ApiConnecter.IpAddress = MedaiUrl; // Set the IP address from the main window
-            ApiConnecter.Connection();
-            ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend1;
-        }
 
-        private void ApiConnecter_DoHubEventSend1(string type, string message)
-        {
-            
-        }
+            ClipList.Clear();
 
-        public async Task<bool> MediaSaveAsync(string item)
-        {
-            string query = $"MediaInfo/{item}";
-
-            var response = await ApiConnecter.Client().GetAsync(query);
-
-            if (response.IsSuccessStatusCode)
+            MediaConnecter.GetMediaListAsync().ContinueWith(task =>
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var medias = JsonConvert.DeserializeObject<MediaDataInfo>(json);
+                if (task.IsCompletedSuccessfully)
+                {
+                    task.Result.ForEach(media =>
+                    {
+                        ClipList.Add(media.Name);
+                    });
+                }
+                else
+                {
+                    // Handle error
+                    Console.WriteLine("Error fetching media list: " + task.Exception?.Message);
+                }
+            });
 
-                return medias != null ? true : false;
-            }
-            else return false ;
-        }
-
-        public async Task<List<MediaDataInfo>> GetMediaListAsync()
-        {
-            string query = $"MediaInfo";
-
-            var response = await ApiConnecter.Client().GetAsync(query);
-
-            if (response.IsSuccessStatusCode)
+            foreach (var item in vdcpServerViewModels)
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var medias = JsonConvert.DeserializeObject<List<MediaDataInfo>>(json);
-
-                return medias;
-            }
-            else return null;
-               
-        }
-
-        public async void DeleteMedia(string item)
-        {
-            if (item == null) return;
-
-            var response = await ApiConnecter.client.DeleteAsync($"MediaInfo/{item}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                //System.Windows.MessageBox.Show("Log created successfully!");
-            }
-            else
-            {
-                //System.Windows.MessageBox.Show("Failed to create log.");
+                item.ClipList = ClipList;
             }
         }
-
-
 
         public void Start()
         {
