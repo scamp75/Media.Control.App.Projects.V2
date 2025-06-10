@@ -196,7 +196,7 @@
             <Grid Background="{StaticResource PanleColor}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
-                    <RowDefinition Height="175"/>
+                    <RowDefinition Height="210"/>
                     <RowDefinition Height="240"/>
                     <RowDefinition Height="240"/>
                     <RowDefinition Height="*"/>
@@ -220,6 +220,7 @@
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="35"/>
+                            <RowDefinition Height="35"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
@@ -235,49 +236,65 @@
                                    FontSize="16" 
                                    Foreground="{DynamicResource ButtonForegroundColor}"/>
 
-                        <TextBlock Text="Platform URL :" 
+                        <TextBlock Text="ServerName :" 
                                    Grid.Row="1" Grid.Column="0" 
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   Margin="10,0,10,0"
+                                   FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
+                        
+                        <TextBlock Text="Platform URL :" 
+                                   Grid.Row="2" Grid.Column="0" 
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    Margin="10,0,10,0"
                                    FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
 
                         <TextBlock Text="Platform Key :" 
-                                   Grid.Row="2" Grid.Column="0" 
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Right"
-                                   Margin="10,0,10,0"
-                                   FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
-                        <TextBlock Text="Work Node :" 
                                    Grid.Row="3" Grid.Column="0" 
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    Margin="10,0,10,0"
                                    FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
-                        <TextBlock Text="Fabric :" 
+                        <TextBlock Text="Work Node :" 
                                    Grid.Row="4" Grid.Column="0" 
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   Margin="10,0,10,0"
+                                   FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
+                        <TextBlock Text="Fabric :" 
+                                   Grid.Row="5" Grid.Column="0" 
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    Margin="10,0,10,7"
                                    FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
 
+                        <TextBox x:Name="ServerNameTextBox" 
+                                 Text="{Binding ServerName}"
+                                  Grid.Row="1" Grid.Column="1"  Margin="2,2,10,2"
+                                  FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
+                                  Background="{DynamicResource PanleColor}" 
+                                  BorderBrush="{DynamicResource ButtonBorderColor}"
+                                  BorderThickness="1"/>
+
+
                         <TextBox x:Name="PlatformUrlTextBox" 
                                  Text="{Binding PlatformUrl}"
-                                  Grid.Row="1" Grid.Column="1"  Margin="2,2,10,2"
+                                  Grid.Row="2" Grid.Column="1"  Margin="2,2,10,2"
                                   FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
                                   Background="{DynamicResource PanleColor}" 
                                   BorderBrush="{DynamicResource ButtonBorderColor}"
                                   BorderThickness="1"/>
                         <TextBox x:Name="PlatformKeyTextBox" 
                                  Text="{Binding PlatformKey}"
-                                  Grid.Row="2" Grid.Column="1"  Margin="2,2,10,2"
+                                  Grid.Row="3" Grid.Column="1"  Margin="2,2,10,2"
                                   FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
                                   Background="{DynamicResource PanleColor}" 
                                   BorderBrush="{DynamicResource ButtonBorderColor}"
                                   BorderThickness="1"/>
                         <TextBox x:Name="WorkNodeTextBox" 
                                     Text="{Binding WorkNode}"
-                                  Grid.Row="3" Grid.Column="1"  Margin="2,2,10,2"
+                                  Grid.Row="4" Grid.Column="1"  Margin="2,2,10,2"
                                   FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
                                   Background="{DynamicResource PanleColor}" 
                                   BorderBrush="{DynamicResource ButtonBorderColor}"
@@ -285,7 +302,7 @@
 
                         <TextBox x:Name="FabricTextBox" 
                                     Text="{Binding Fabric}"
-                                  Grid.Row="4" Grid.Column="1" Margin="2,2,10,7"
+                                  Grid.Row="5" Grid.Column="1" Margin="2,2,10,7"
                                   FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
                                   Background="{DynamicResource PanleColor}" 
                                   BorderBrush="{DynamicResource ButtonBorderColor}"

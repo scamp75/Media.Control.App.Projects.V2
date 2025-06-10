@@ -44,10 +44,10 @@ namespace Vdcp.Service.App.Manager.Model.Engine
             
         }
 
-        public async Task<bool> Connect()
+        public  Task<bool> Connect()
         {
             
-            return await amppControl.Connect();
+            return  amppControl.Connect();
             
         }
 
@@ -73,8 +73,7 @@ namespace Vdcp.Service.App.Manager.Model.Engine
         }
 
         public bool Stop()
-        {
-            
+        {   
             amppControl.OnAmppControlErrorEvent -= AmppControl_OnAmppControlErrorEvent;
             amppControl.OnAmppControlNotifyEvent -= AmppControl_OnAmppControlNotifyEvent;
             amppControl.OnStateEvent -= AmppControl_OnStateEvent;
@@ -114,9 +113,9 @@ namespace Vdcp.Service.App.Manager.Model.Engine
             
         }
 
-        public Task<IEnumerable<AmppControlMacro>> GetControlMacro()
+        public async Task<IEnumerable<AmppControlMacro>> GetControlMacro()
         { 
-            return amppControl?.GetMacros(); 
+            return await amppControl?.GetMacros(); 
         }
 
 

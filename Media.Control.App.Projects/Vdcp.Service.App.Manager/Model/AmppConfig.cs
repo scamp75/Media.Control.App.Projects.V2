@@ -8,6 +8,8 @@ namespace Vdcp.Service.App.Manager.Model
 {
     public class AmppConfig
     {
+        public string ServerName { get; set; } = "VDCPAMPPServer#1";
+
         public string PlatformUrl { get; set; } = "https://ampp.vdcp.co.kr";
         
         public string PlatformKey { get; set; }

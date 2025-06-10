@@ -70,6 +70,20 @@ namespace Vdcp.Service.App.Manager.ViewModel
             }
         }
 
+        private string _ServerName;
+        public string ServerName
+        {
+            get => _ServerName;
+            set
+            {
+                if (_ServerName != value)
+                {
+                    _ServerName = value;
+                    OnPropertyChanged(nameof(ServerName));
+                }
+            }
+        }
+
         private string _PlatformUrl;
         public string PlatformUrl
         {
@@ -166,6 +180,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
             AmppConfig ampp = new AmppConfig
             {
+                ServerName = ServerName,
                 PlatformUrl = PlatformUrl,
                 PlatformKey = PlatformKey,
                 WorkNode = WorkNode,
@@ -205,6 +220,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
                 if (amppConfig != null)
                 {
+                    ServerName  = amppConfig.ServerName;
                     PlatformUrl = amppConfig.PlatformUrl;
                     PlatformKey = amppConfig.PlatformKey;
                     WorkNode = amppConfig.WorkNode;

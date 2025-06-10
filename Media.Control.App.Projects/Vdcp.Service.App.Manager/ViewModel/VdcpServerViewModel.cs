@@ -21,6 +21,7 @@ using VdcpService.lib;
 using System.Windows.Forms;
 using System.DirectoryServices;
 using Microsoft.AspNetCore.SignalR.Protocol;
+using Ampp.Control.lib.Model;
 
 namespace Vdcp.Service.App.Manager.ViewModel
 {
@@ -34,11 +35,27 @@ namespace Vdcp.Service.App.Manager.ViewModel
         private EngineControl amppEngin2  = null;
         private EngineControl amppEngin = null;
         private MediaApiConnecter ApiConnecter = null;
-        
+        private AmppControlMacro amppMacro = null;
         private bool isThreadStart = false;
+        private bool isActive = false;
+        private Thread AmppStateThread = null;
 
         public string CurrentTimeCode { get; set; } = "00:00:00:00";
         public string RemainingTimeCode { get; set; } = "00:00:00:00";
+
+        public double FPS { get; set; } = 30.0;
+
+        public TimecodeCalculator Calculator { get; set; } 
+
+        public string SelectInput { get; set; } = "Input1";
+
+        public double Duration { get; set; }
+
+        public string RecoderStateus { get;set; } = "Prepared";
+
+        public string PlayerStateus { get; set; } = "Idle";
+
+
 
 
         private List<string> _ClipList { get; set; } = new List<string>();
@@ -123,7 +140,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
         public VdcpServerViewModel(PortDataInfo portData)
         {
             Type = portData.Type;
-            ServerName = $"Port_{portData.PortName}";
+            ServerName = $"{portData.AmppConfig.ServerName}_{portData.PortName}";
             PortName = portData.PortName;
             SelectPort = Type != "Player" ? -portData.SelectPort : portData.SelectPort;
             Macros1 = portData.Macros1;
@@ -162,12 +179,12 @@ namespace Vdcp.Service.App.Manager.ViewModel
             if (vdcpService != null) vdcpService.Close();
         }
 
-        public bool Start()
+        public async Task<bool> Start()
         {
-            var result = AmppConnect();
+            var result = await AmppConnect();
             isThreadStart = true;
 
-            return result.Result;
+            return result;
         }
 
         public void Stop()
@@ -195,6 +212,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
                     Stop(commandData.StopTime);
                     break;
                 case EumCommandKey.CONTINUE:
+                    Continue();
+                    break;
                 case EumCommandKey.PLAY:
                     Play(commandData.StatTime);
                     break;
@@ -230,9 +249,12 @@ namespace Vdcp.Service.App.Manager.ViewModel
                 case EumCommandKey.SELECTPORT:
                     SetSelectPort(commandData.iPortNum);
                     break;
+                case EumCommandKey.SELECTINPUT:
+                    SelectInput = commandData.Input;
+                    break;
                 case EumCommandKey.RECORDINIT:
                 case EumCommandKey.EXRECORDINIT:
-                    RecordInit(commandData.Input, commandData.ClipName);
+                    RecordInit( commandData.ClipName);
                     break;
                 case EumCommandKey.EXPLAYCUE:
                 case EumCommandKey.PLAYCUE:
@@ -253,7 +275,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
                     break;
                 case EumCommandKey.RECODEINITWITHDATA:
                 case EumCommandKey.EXRECODEINITWITHDATA:
-                    ReCodeInitWithData(commandData.Input, commandData.FileName, commandData.sSom, commandData.sEom);
+                    ReCodeInitWithData( commandData.FileName, commandData.sSom, commandData.sEom);
                     break;
                 case EumCommandKey.PRESET:
                     break;
@@ -292,6 +314,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
                     break;
             }
         }
+
+
         #endregion
 
         /// Vdcp Command ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,7 +347,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
         {
             if (Port == SelectPort)
             {
-
+                isActive = true;
             }
         }
         private async void DiskPreRoll()
@@ -331,9 +355,9 @@ namespace Vdcp.Service.App.Manager.ViewModel
             
         }
 
-        private async void ReCodeInitWithData(string Input, string filePath, string Som, string Eom)
+        private async void ReCodeInitWithData( string filePath, string Som, string Eom)
         {
-           
+            RecordInit(filePath);
         }
 
         private async void SingalFull(int value)
@@ -367,36 +391,43 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
         private async void Cue(string fileName)
         {
+            SetVdcpMedaiState("CueInit");
             var objData = new { file = fileName };
             await amppEngin.Player(EnmPlayerControl.Clip, JObject.FromObject(objData));
         }
 
 
-        private async void RecordInit(string Input, string filePath)
+        private async void RecordInit(string filePath )
         {
+            SetVdcpMedaiState("CueInit");
+
             var RecorderPrepare = new
             {
-                Source = Input,
+                Source = SelectInput,
                 filename = filePath
             };
 
-           await amppEngin.Recoder(EnmRecoderControl.Prepare,
+            await amppEngin.Recoder(EnmRecoderControl.Prepare,
                     JObject.FromObject(RecorderPrepare));
 
         }
 
         private async void SetSelectPort(int Port)
         {
-         
+            if(isActive && Port != SelectPort)
+            {
+                isActive = false;
+            }
         }
 
         private async void ClosePort(int Port)
         {
-          
+            isActive = false;
         }
 
         private async void Shuttle(double value)
         {
+            SetVdcpMedaiState("Busy");
             var objData = new { Rate = value };
             await amppEngin.Player(EnmPlayerControl.Shuttle, JObject.FromObject(objData));
 
@@ -404,28 +435,40 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
         private async void Jog(double value)
         {
+            SetVdcpMedaiState("Busy");
             var objData = new { Rate = value };
             await amppEngin.Player(EnmPlayerControl.Rate, JObject.FromObject(objData));
         }
 
         private async void Seek(int Frame )
         {
+            SetVdcpMedaiState("Busy");
+
             var objData = new { frame = Frame };
             await amppEngin.Player(EnmPlayerControl.Seek, JObject.FromObject(objData));
 
         }
+        private async void Continue()
+        {
+            SetVdcpMedaiState("Busy");
+            if (PlayerStateus == "Still")
+                await amppEngin.Player(EnmPlayerControl.Playpause);
+        }
 
         private async void Still()
         {
-            var objData = new { Start = $"$now" };
-            await amppEngin.Player(EnmPlayerControl.Stopat, JObject.FromObject(objData));
+            SetVdcpMedaiState("Busy");
+            if(PlayerStateus == "Play")
+                await amppEngin.Player(EnmPlayerControl.Playpause);
         }
 
         private async void Record(string StartTime = "")
         {
+            SetVdcpMedaiState("Busy");
+
             string startTime = "2018-11-13T20:20:39.000Z";
             if (StartTime != "") startTime = StartTime;
-            
+
             await amppEngin.Recoder(EnmRecoderControl.Stopat, JObject.FromObject(
                  new
                  {
@@ -435,6 +478,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
         private async void Play(string StartTime ="")
         {
+            SetVdcpMedaiState("Busy");
+
             var objData = new { Start = $"{StartTime}" };
             await amppEngin.Player(EnmPlayerControl.Startat, JObject.FromObject(objData));
 
@@ -447,28 +492,83 @@ namespace Vdcp.Service.App.Manager.ViewModel
             if (stopTime != string.Empty)
                 objData = new { Stop = $"{stopTime}" };
 
+
+            SetVdcpMedaiState("Busy");
             if (Type == "Player")
             {
                 var eject = new
                 {
                     isCleared = true
                 };
-
                 await amppEngin.Player(EnmPlayerControl.Clearassets, JObject.FromObject(eject));
             }
             else
+            {
                 await amppEngin.Recoder(EnmRecoderControl.Stopat, JObject.FromObject(objData));
+            }
         }
 
         private void ReName(string oldName, string newName)
         {
 
         }
+
+        private void SetVdcpMedaiState(string state)
+        {
+            vdcpService.MediaStatus_PortBusy = false;
+            vdcpService.MediaStatus_CueInit = false;
+            vdcpService.MediaStatus_CueInitDone = false;
+            vdcpService.MediaStatus_Still = false;
+            vdcpService.MediaStatus_PlayRecord = false;
+            vdcpService.MediaStatus_Idle = false;
+            vdcpService.MediaStatus_Jog = false;
+            vdcpService.MediaStatus_VarPlay  = false;
+            
+
+            if( state == "Busy")
+            {
+                vdcpService.MediaStatus_PortBusy = true;
+            }
+            else if (state == "CueInit")
+            {
+                vdcpService.MediaStatus_PortBusy = true;
+                vdcpService.MediaStatus_CueInit = true;
+            }
+            else if (state == "CueDone")
+            {
+                vdcpService.MediaStatus_CueInitDone = true;
+                vdcpService.MediaStatus_Still = true;
+            }
+            else if (state == "Record" || state == "Play")
+            {
+                vdcpService.MediaStatus_PlayRecord = true;
+            }
+            else if (state == "Still")
+            {
+                vdcpService.MediaStatus_PlayRecord = true;
+                vdcpService.MediaStatus_Still = true;
+            }
+            else if (state == "Jog")
+            {
+                vdcpService.MediaStatus_Jog = true;
+                vdcpService.MediaStatus_PlayRecord = true;
+            }
+            else if (state == "VarPlay")
+            {
+                vdcpService.MediaStatus_VarPlay = true;
+                vdcpService.MediaStatus_PlayRecord = true;
+            }
+            else if (state == "Idle")
+            {
+                vdcpService.MediaStatus_Idle = true;
+            }
+        }
+
         #endregion
 
         /// Ampp Control////////////////////////////////////////////////////////////////////////////////////////////////////
         #region Ampp Control Methods
-        private Task<bool> AmppConnect()
+        private async Task<bool> AmppConnect()
         {
             Task<bool> result = Task.FromResult(false); 
 
@@ -477,57 +577,81 @@ namespace Vdcp.Service.App.Manager.ViewModel
                 if (Type == "Player")
                 {
                     amppEngin1 = new EngineControl(AmppConfig, WorkLoad1, ServerName);
+                   var connect = await amppEngin1.Connect();
 
-                    amppEngin1.Connect().ContinueWith(task =>
+                    if(connect)
                     {
                         amppEngin1.OnAmppControlErrorEvent += AmppEngin_OnAmppControlErrorEvent;
                         amppEngin1.OnAmppControlNotifyEvent += AmppEngin_OnAmppControlNotifyEvent;
                         amppEngin1.OnStateEvent += AmppEngin_OnStateEvent;
 
-                        result = new Task<bool>(() => task.Result);
-                    });
 
-                    amppEngin2 = new EngineControl(AmppConfig, WorkLoad2, ServerName);
+                        amppEngin2 = new EngineControl(AmppConfig, WorkLoad2, ServerName);
+                        connect = await amppEngin2.Connect();
 
-                    amppEngin2.Connect().ContinueWith(task =>
-                    {
-                        amppEngin2.OnAmppControlErrorEvent += AmppEngin_OnAmppControlErrorEvent;
-                        amppEngin2.OnAmppControlNotifyEvent += AmppEngin_OnAmppControlNotifyEvent;
-                        amppEngin2.OnStateEvent += AmppEngin_OnStateEvent;
-
-                        result = new Task<bool>(() => task.Result);
-                    });
-
-                    amppEngin = amppEngin1;
-
-                    Task.Run(async () =>
-                    {
-                        while (isThreadStart)
+                        if (connect)
                         {
-                            await amppEngin.Player(EnmPlayerControl.Getstate);
-                            Thread.Sleep(600);
+                            amppEngin2.OnAmppControlErrorEvent += AmppEngin_OnAmppControlErrorEvent;
+                            amppEngin2.OnAmppControlNotifyEvent += AmppEngin_OnAmppControlNotifyEvent;
+                            amppEngin2.OnStateEvent += AmppEngin_OnStateEvent;
                         }
-                    });
+
+                        amppEngin = amppEngin1;
+
+                        if (amppMacro == null)
+                        {
+                            var macros = await amppEngin.GetControlMacro();
+
+                            foreach (var macro in macros)
+                            {
+                                if (macro.Name.ToLower() == ServerName.ToLower())
+                                {
+                                    amppMacro = macro;
+                                    break;
+                                }
+                            }
+                        }
+
+
+                        AmppStateThread = new Thread(new ThreadStart(DoAmppWork));
+                        AmppStateThread.Start();
+
+                        result = Task.FromResult(true);
+                    }
                 }
                 else
                 {
                     amppEngin = new EngineControl(AmppConfig, WorkLoad1, ServerName);
+                    var connect = await amppEngin.Connect();
 
-                    amppEngin.Connect().ContinueWith(task =>
+                    if (connect)
                     {
                         amppEngin.OnAmppControlErrorEvent += AmppEngin_OnAmppControlErrorEvent;
                         amppEngin.OnAmppControlNotifyEvent += AmppEngin_OnAmppControlNotifyEvent;
                         amppEngin.OnStateEvent += AmppEngin_OnStateEvent;
 
-                        result = new Task<bool>(() => task.Result);
-                    });
+                        result = Task.FromResult(true);
+                    }
                 }
             }
             catch
             { 
+                result = Task.FromResult(false);
             }
 
-            return result ?? Task.FromResult(false);
+            return result.Result;
+        }
+
+        private async void DoAmppWork()
+        {
+            while (true)
+            {
+                if (isThreadStart)
+                {
+                    await amppEngin.Player(EnmPlayerControl.Getstate);
+                }
+                Thread.Sleep(600);
+            }
         }
 
         private void ChangeEngine()
@@ -544,7 +668,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
         {
             var payload = JsonConvert.SerializeObject(e.Notification.Payload);
 
-            if (Type == "Recoder")
+            if (Type == "Recoder" && e.Workload == WorkLoad1)
             {
                 switch (e.Command)
                 {
@@ -554,7 +678,18 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
                         if (config != null)
                         {
+                            switch (config.VideoStandard.FrameRate)
+                            {
+                                case "30000x1001":
+                                    FPS = 30;
+                                    break;
+                                case "60000x1001":
+                                    FPS = 60;
+                                    break;
+                            }
 
+                            Calculator = new TimecodeCalculator((decimal)FPS);
+                            FrameSmoother.Initialize(0, (int)FPS);
                         }
 
                         break;
@@ -563,7 +698,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
                         if (state.Source != null)
                         {
-
+                            SelectInput = state.Source;
                         }
                         break;
                     case "recorderinfo":
@@ -572,9 +707,43 @@ namespace Vdcp.Service.App.Manager.ViewModel
 
                         if (info != null)
                         {
+                            FrameSmoother.UpdateExternalFrame((int)Convert.ToInt32(info.RecordedFrames), 1, true);
 
+                            if (info.State == "started")
+                            {
+                                if (RecoderStateus == "Prepared")
+                                {
+                                    RecoderStateus = "Record";
+                                    FrameSmoother.Start();
+
+                                    SetVdcpMedaiState("Record");
+                                }
+
+                            }
+                            else if (info.State == "prepared")
+                            {
+                                RecoderStateus = "Prepared";
+                                SetVdcpMedaiState("CueDone");
+                            }
+                            else if (info.State == "ready")
+                            {
+                                if (RecoderStateus == "Record")
+                                {
+                                    CurrentTimeCode = Calculator?.FrameNumberToTimecode((ulong)Convert.ToInt32(info.RecordedFrames));
+
+                                    vdcpService.CurrentTimeCode = CurrentTimeCode;
+
+                                    FrameSmoother.Stop();
+                                }
+
+                                SetVdcpMedaiState("Still");
+                                RecoderStateus = "Pause";
+                            }
+                            else if (info.State == "Error")
+                            {
+                                RecoderStateus = "Error";
+                            }
                         }
-
                         break;
                 }
             }
@@ -592,6 +761,9 @@ namespace Vdcp.Service.App.Manager.ViewModel
                             
                             if (clear.isCleared)
                             {
+                                SetVdcpMedaiState("Idle");
+                                PlayerStateus = "Idle";
+
                                 FrameSmoother.Stop();
                                 FrameSmoother.ResetFrame(0);
                             }
@@ -600,15 +772,61 @@ namespace Vdcp.Service.App.Manager.ViewModel
                         case "transportcommand": // 진행 정보   1..
                             var command = JsonConvert.DeserializeObject<Model.Engine.TransportCommand>(payload);
                             FrameSmoother.UpdateExternalFrame(Convert.ToInt32(command.Position), 1, isIncreasing);
+
+                            Duration = command.OutPosition - command.InPosition + 1;
+
+                            if (double.TryParse(command.Rate, out double temp))
+                            {
+                                if (temp == 0)    // stop 상태
+                                {
+                                    PlayerStateus = "Still";
+                                    SetVdcpMedaiState("Still");
+                                    if (FrameSmoother.IsStart == true) FrameSmoother.Stop();
+                                }
+                                else if (temp > 0 && temp < 1) // jog 상태
+                                {
+                                    PlayerStateus = "Jog";
+                                    SetVdcpMedaiState("Jog");
+                                    FrameSmoother.isFrameSmoother = false;
+                                    //DisPlayTimcode((int)command.Position);
+                                    Debug.WriteLine($"타임코드 직정입력 {command.Position}");
+                                }
+                                else if (temp == 1 || temp > 1)  // play 상태
+                                {
+                                    PlayerStateus = "Play";
+                                    if (temp == 1) SetVdcpMedaiState("Play");
+                                    else if (temp > 1) SetVdcpMedaiState("VarPlay");
+
+                                    FrameSmoother.isFrameSmoother = true;
+                                    if (FrameSmoother.IsStart == false)
+                                        FrameSmoother.Start();
+                                }
+                            }
+
                             break;
                         case "playerconfig": // Player 설정 정보  2...
+                            var config = JsonConvert.DeserializeObject<Model.Engine.PlayerConfig>(payload);
 
+                            switch (config.FrameRate)
+                            {
+                                case "30000x1001":
+                                    FPS = 30;
+                                    break;
+                                case "60000x1001":
+                                    FPS = 60;
+                                    break;
+                            }
+
+                            Calculator = new TimecodeCalculator((decimal)FPS);
+                            FrameSmoother.Initialize(0, (int)FPS);
                             break;
                         case "clip":  //4...
                             var clip = JsonConvert.DeserializeObject<Model.Engine.Clip>(payload);
                             if (clip.Loaded)
                             {
-
+                                Calculator = new TimecodeCalculator((decimal)FPS);
+                                FrameSmoother.Initialize(0, (int)FPS);
+                                SetVdcpMedaiState("CueDone");
                             }
 
                             break;
@@ -621,13 +839,33 @@ namespace Vdcp.Service.App.Manager.ViewModel
                     }
                 }
             }
+
+            Debug.WriteLine($"[{DateTime.Now.ToString("hh:MM:ss:fff")}] -------------------------------------------");
+            Debug.WriteLine($"Notification {e.Notification.Key}");
+            Debug.WriteLine($"Workload:\t{e.Workload}");
+            Debug.WriteLine($"Command:\t{e.Command}");
+            Debug.WriteLine($"Details:\t{e.Notification.Status}");
+            Debug.WriteLine($"Payload:\t{JsonConvert.SerializeObject(e.Notification.Payload)}");
         }
 
         private void FrameSmoother_FrameUpdated(object? sender, int e)
         {
+            var timecode = Calculator?.FrameNumberToTimecode((ulong)e);
 
+            if (timecode != null)
+            {
+                CurrentTimeCode = timecode;
+                vdcpService.CurrentTimeCode = CurrentTimeCode;
+
+                if(Duration >0)
+                {
+                    RemainingTimeCode = Calculator?.FrameNumberToTimecode((ulong)(Duration - e));
+                    vdcpService.RemainingTimeCode = RemainingTimeCode;
+
+                }
+
+            }
         }
-
         private void AmppEngin_OnAmppControlErrorEvent(object? sender, Ampp.Control.lib.AmppControlErrorEventArgs e)
         {
             //SendLog(LogType.Error, $"[{MethodBase.GetCurrentMethod().Name}] Workload : {e.Key} [{e.Workload}] Command : {e.Command}", e.Details);
@@ -656,6 +894,13 @@ namespace Vdcp.Service.App.Manager.ViewModel
                     {
                         amppEngin2.Stop();
                         amppEngin2 = null;
+                    }
+
+                    if(AmppStateThread != null)
+                    {
+                        isThreadStart = false;
+                        AmppStateThread?.Join(100);
+                        AmppStateThread = null;
                     }
                 }
                 else

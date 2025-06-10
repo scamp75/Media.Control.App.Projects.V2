@@ -55,6 +55,11 @@ namespace VdcpService.lib
             CommandKey = key;
         }
 
+        internal VdcpEventArgsDefine()
+        {
+         
+        }
+
         internal VdcpEventArgsDefine(EumCommandKey key, string data)
         {
             CommandKey = key;

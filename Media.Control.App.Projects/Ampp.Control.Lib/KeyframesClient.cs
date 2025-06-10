@@ -33,6 +33,7 @@ namespace Ampp.Control.lib
                 gvPlatform.OnPushNotifyEvent += OnNotification;
                 return await this.gvPlatform.StartNotificationsListenerAsync();
             }
+
             return connected;
         }
 

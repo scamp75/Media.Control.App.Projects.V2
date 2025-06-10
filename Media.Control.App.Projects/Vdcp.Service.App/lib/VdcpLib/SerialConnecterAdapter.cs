@@ -259,8 +259,10 @@ namespace VdcpService.lib
                 string sDruation = string.Empty;
                 string sSom = string.Empty;
                 string sEom = string.Empty;
+                string sInput = string.Empty;   
 
                 byte[] clipName = null;
+                byte[] input = null;
                 byte[] value = null;
                 byte[] oldName = null;
                 byte[] newName = null;
@@ -557,6 +559,22 @@ namespace VdcpService.lib
                         Task.Run(() => EventActionCallbacks(new VdcpEventArgsDefine(key, SignalNum)));
 
                         Console.WriteLine($"------------> SingnalFull :[{SignalNum}]");
+                        break;
+                    case EumCommandKey.SELECTINPUT:
+                        SendAck();
+
+                        recCount = Convert.ToInt32(RecData[4]);
+                        input = new byte[recCount];
+
+                        System.Buffer.BlockCopy(RecData, 5, input, 0, recCount);
+                        sInput = BytesToString(input);
+
+                        Task.Run(() => EventActionCallbacks(new VdcpEventArgsDefine()
+                        {
+                            CommandKey = key,
+                            Input = sInput
+                        }));
+
                         break;
                     case EumCommandKey.RECODEINITWITHDATA:
                         SendAck();

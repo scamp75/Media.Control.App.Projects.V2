@@ -28,6 +28,9 @@ namespace VdcpService.lib
         public static readonly byte[] RECIVE_SELECTPORT            = new byte[4] { 0x02, 0x03, 0x20, 0x22 };
         public static readonly byte[] RECIVE_RECORDINIT            = new byte[4] { 0x02, 0x0E, 0x20, 0x23 };
         public static readonly byte[] RECIVE_EXRECORDINIT          = new byte[4] { 0x02, 0x0E, 0xA0, 0x23 };
+
+        public static readonly byte[] RECIVE_SELECTINPUT           = new byte[4] { 0x02, 0x0A, 0x20, 0x39 };
+
         public static readonly byte[] RECIVE_PLAYCUE               = new byte[4] { 0x02, 0x0A, 0x20, 0x24 };
         public static readonly byte[] RECIVE_EXPLAYCUE             = new byte[4] { 0x02, 0x0A, 0xA0, 0x24 };
         public static readonly byte[] RECIVE_CUEWITHDATA           = new byte[4] { 0x02, 0x12, 0x20, 0x25 };
@@ -79,6 +82,9 @@ namespace VdcpService.lib
         public static readonly byte[] SEND_SELECTPORT             = new byte[4] { 0x00, 0x00, 0x04, 0x00 };
         public static readonly byte[] SEND_RECORDINIT             = new byte[4] { 0x00, 0x00, 0x04, 0x00 };
         public static readonly byte[] SEND_EXRECORDINIT           = new byte[4] { 0x00, 0x00, 0x04, 0x00 };
+
+        public static readonly byte[] SEND_SELECTINPUT            = new byte[4] { 0x00, 0x00, 0x04, 0x00 };
+
         public static readonly byte[] SEND_PLAYCUE                = new byte[4] { 0x00, 0x00, 0x04, 0x00 };
         public static readonly byte[] SEND_EXPLAYCUE              = new byte[4] { 0x00, 0x00, 0x04, 0x00 };
         public static readonly byte[] SEND_CUEWITHDATA            = new byte[4] { 0x00, 0x00, 0x04, 0x00 };

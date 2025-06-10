@@ -483,9 +483,16 @@ namespace VdcpService.lib
             CommandDictionary.Add(EumCommandKey.RECORDINIT
                 , SetCommandData(EumCommandKey.RECORDINIT, "RECORDINIT", VdcpCommandKeyValues.RECIVE_RECORDINIT
                                                 , new byte[] { }, 0x00, VdcpCommandKeyValues.SEND_RECORDINIT));
+            
             CommandDictionary.Add(EumCommandKey.EXRECORDINIT
                 , SetCommandData(EumCommandKey.EXRECORDINIT, "EXRECORDINIT", VdcpCommandKeyValues.RECIVE_EXRECORDINIT
                                                 , new byte[] { }, 0x00, VdcpCommandKeyValues.SEND_EXRECORDINIT));
+
+            CommandDictionary.Add(EumCommandKey.SELECTINPUT
+                , SetCommandData(EumCommandKey.SELECTINPUT, "SELECTINPUT", VdcpCommandKeyValues.RECIVE_SELECTINPUT
+                                                , new byte[] { }, 0x00, VdcpCommandKeyValues.SEND_SELECTINPUT));
+
+
             CommandDictionary.Add(EumCommandKey.PLAYCUE
                 , SetCommandData(EumCommandKey.PLAYCUE, "PLAYCUE", VdcpCommandKeyValues.RECIVE_PLAYCUE
                                                 , new byte[] { }, 0x00, VdcpCommandKeyValues.SEND_PLAYCUE));

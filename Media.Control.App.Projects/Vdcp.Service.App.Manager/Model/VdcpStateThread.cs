@@ -11,7 +11,7 @@ namespace Vdcp.Service.App.Manager.Model
         public string Name { get; set; } = string.Empty;
 
         public bool IsRunning { get; set; } = false;
-;
+
         public string CurrentTimeCode { get; set; } = "00:00:00:00";
         public string RemainingTimeCode { get; set; } = "00:00:00:00";
 

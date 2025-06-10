@@ -45,7 +45,7 @@ namespace Ampp.Control.lib
         /// <returns></returns>
         public Task<bool> LoginAsync()
         {
-            return this.GetAccessTokenAsync();
+            return  this.GetAccessTokenAsync();
         }
 
         /// <summary>

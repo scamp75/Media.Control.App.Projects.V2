@@ -202,7 +202,7 @@ namespace VdcpService.lib
         //Active ID Request
         ACTIVEIDREQUEST,
         EXACTIVEIDREQUEST,
-
+        SELECTINPUT,
         ERROR,
        ACK,
        NAK,

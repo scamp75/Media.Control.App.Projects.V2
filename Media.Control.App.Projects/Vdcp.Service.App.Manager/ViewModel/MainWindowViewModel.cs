@@ -320,7 +320,8 @@ namespace Vdcp.Service.App.Manager.ViewModel
         {
             foreach(var item in vdcpServerViewModels)
             {
-                item.Start();
+                if(item.WorkLoad1 != string.Empty)
+                    item.Start();
             }
         }
 

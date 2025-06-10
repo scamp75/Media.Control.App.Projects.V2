@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vdcp.Service.App.Manager.Model.Converter
+namespace Vdcp.Service.App.Manager.Model
 {
     public class Timecode : IComparable, IComparable<Timecode>, IEquatable<Timecode>
     {
