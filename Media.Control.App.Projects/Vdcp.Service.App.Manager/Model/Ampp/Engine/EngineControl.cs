@@ -133,13 +133,14 @@ namespace Vdcp.Service.App.Manager.Model.Engine
 
         private void AmppControl_OnAmppControlNotifyEvent(object? sender, AmppControlNotificationEventArgs e)
         {   
-            OnAmppControlNotifyEvent(sender, e);
+            if(OnAmppControlNotifyEvent != null) 
+                OnAmppControlNotifyEvent(sender, e);
  
         }
 
         private void AmppControl_OnAmppControlErrorEvent(object? sender, AmppControlErrorEventArgs e)
         {
-            OnAmppControlErrorEvent(sender, e);
+            if(OnAmppControlErrorEvent != null) OnAmppControlErrorEvent(sender, e);
         }
 
 

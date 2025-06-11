@@ -22,16 +22,20 @@ namespace Vdcp.Service.App.Manager.Model
         Warning
     }
 
-    public class Logger
+    public class LoggerApiConnecter
     {
         private MediaApiConnecter ApiConnecter { get; set; }
-        public Logger(string url) 
+        public LoggerApiConnecter(string url) 
         {
             ApiConnecter = new MediaApiConnecter("loghub");
             ApiConnecter.IpAddress =url;
-            ApiConnecter.Connection();
             ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend;
 
+        }
+
+        public bool Connection()
+        {
+             return ApiConnecter.Connection();
         }
 
         public async void Log(string type, string channel, string title, string messag )

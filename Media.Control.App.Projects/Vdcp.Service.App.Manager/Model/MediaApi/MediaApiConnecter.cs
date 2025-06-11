@@ -35,7 +35,7 @@ namespace Vdcp.Service.App.Manager.Model
             return client;
         }
 
-        public HubConnection Connection()
+        public bool Connection()
         {
             connection = new HubConnectionBuilder()
                 .WithUrl($"http://{IpAddress}:5050/{Hub}")  // SignalR Hub 경로
@@ -47,20 +47,13 @@ namespace Vdcp.Service.App.Manager.Model
                 DoHubEventSend(type, message);
             });
 
-
-            return connection;
+            return true;
+            //return connection.State == HubConnectionState.Connected ? true : false;
         }
 
-        public async void StartHub()
+        public void StartHub()
         {
-            try
-            {
-                await connection.StartAsync();  // SignalR 연결 시작
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show("Connection failed: " + ex.Message);
-            }
+            connection.StartAsync(); // Await the asynchronous operation
         }
 
         public async void CloseHub()

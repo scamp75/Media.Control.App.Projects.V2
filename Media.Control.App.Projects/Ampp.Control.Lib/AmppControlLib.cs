@@ -96,14 +96,14 @@ namespace Ampp.Control.lib
                             await amppControl.ExSubscribeToWorkload(WorkloadId, "recorderinfo");
                         }
 
-                        return true;
-                        //bool isOnline = await amppControl.PingAsync(WorkloadId, 1000);
-                        //if (isOnline)
-                        //{
-                        //    Debug.WriteLine($"Ping {isOnline}");
-                        //    await amppControl.GetStateAsync(WorkloadId, ReconKey);
-                        //    result = true;
-                        //}
+                        //return true;
+                        bool isOnline = await amppControl.PingAsync(WorkloadId, 1000);
+                        if (isOnline)
+                        {
+                            Debug.WriteLine($"Ping {isOnline}");
+                            await amppControl.GetStateAsync(WorkloadId, ReconKey);
+                            result = true;
+                        }
 
                     }
                     else { if (OnStateEvent != null) OnStateEvent("Connect [Error] : No WorkLoadId"); return false; }

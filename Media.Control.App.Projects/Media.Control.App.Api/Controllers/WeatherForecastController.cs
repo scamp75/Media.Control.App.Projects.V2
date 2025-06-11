@@ -118,6 +118,21 @@ namespace Media.Control.App.Api.Controllers
             return mediaService.GetMediaDate();
         }
 
+        // GET: api/MediaInfo/count (미디어 개수 조회)
+        [HttpGet("healthcheck")]
+        public IActionResult HealthCheck()
+        {
+            try
+            {
+                return Ok(1); // 정상적으로 개수를 반환
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in HealthCheck: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
 
         // GET: api/MediaInfo/{id} (특정 미디어 조회)
         [HttpGet("{createDate} {iscreateDate} {channel} {title}")]
