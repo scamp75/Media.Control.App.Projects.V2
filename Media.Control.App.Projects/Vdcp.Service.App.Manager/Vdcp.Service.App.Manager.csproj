@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ampp.Control.Lib\Ampp.Control.Lib.csproj" />
+    <ProjectReference Include="..\Media.Control.App.Api\Media.Control.App.Api.csproj" />
     <ProjectReference Include="..\Vdcp.Service.App\Vdcp.Service.App.csproj" />
   </ItemGroup>
 

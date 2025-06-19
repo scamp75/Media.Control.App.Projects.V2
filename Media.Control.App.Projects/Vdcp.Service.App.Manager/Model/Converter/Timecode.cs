@@ -150,7 +150,7 @@ namespace Vdcp.Service.App.Manager.Model
 
         public static bool operator !=(Timecode tc1, Timecode tc2) => !(tc1 == tc2);
 
-        public static implicit operator string(Timecode timecode) => timecode.ToString();
+        public static implicit operator string(Timecode timecode) => timecode?.ToString();
 
         public static implicit operator Timecode(string timecode)
         {

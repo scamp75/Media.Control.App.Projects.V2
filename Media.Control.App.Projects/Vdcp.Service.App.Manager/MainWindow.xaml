@@ -116,8 +116,9 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="60"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <!--<RowDefinition Height="50"/>-->
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -156,17 +157,15 @@
 
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal"  Margin="5,0,0,0">
-                    <TextBlock   x:Name="txtMessage" Text="{Binding ApiMessage}" 
-                            Margin="5,8,0,0"  Width="180" FontWeight="Bold"  Foreground="Yellow" />
-
-                    <TextBox  Text="{Binding IpAddress}" Margin="30,2,2,2" Width="120" 
+                  
+                    <TextBox  Text="{Binding IpAddress}" Margin="210,2,2,2" Width="120" Height="30"
                                 Background="{StaticResource PanleColor}" 
                                 BorderBrush="{StaticResource TitleColor}"
                               Foreground="WhiteSmoke"
                               Style="{StaticResource MahApps.Styles.TextBox}"  />
 
                     <ComboBox Width="90" Margin="2,0,0,0"
-                              Foreground="WhiteSmoke" Height="25"
+                              Foreground="WhiteSmoke" Height="30"
                               HorizontalAlignment="Left" Style="{StaticResource MahApps.Styles.ComboBox}"
                               Background="{StaticResource PanleColor}" 
                              BorderBrush="{StaticResource TitleColor}"
@@ -177,7 +176,11 @@
                
 
                 <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="5,0,0,0">
-                    <Grid >
+
+                    <TextBlock   x:Name="txtMessage" Text="{Binding ApiMessage}" Margin="5,0,0,0" 
+                                 Width="300" FontWeight="Bold"  Foreground="Yellow" />
+
+                    <!--<Grid >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -188,15 +191,15 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                    </Grid>
+                    </Grid>-->
 
-                    <CheckBox Grid.Column="0" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM3" IsChecked="{Binding IsCom3}"/>
+                    <!--<CheckBox Grid.Column="0" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM3" IsChecked="{Binding IsCom3}"/>
                     <CheckBox Grid.Column="1" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM4" IsChecked="{Binding IsCom4}" Margin="2,0,0,0" />
                     <CheckBox Grid.Column="2" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM5" IsChecked="{Binding IsCom5}" Margin="2,0,0,0" />
                     <CheckBox Grid.Column="3" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM6" IsChecked="{Binding IsCom6}" Margin="2,0,0,0" />
                     <CheckBox Grid.Column="4" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM7" IsChecked="{Binding IsCom7}" Margin="2,0,0,0" />
                     <CheckBox Grid.Column="5" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM8" IsChecked="{Binding IsCom8}" Margin="2,0,0,0"/>
-                    <CheckBox Grid.Column="6" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM9" IsChecked="{Binding IsCom9}" Margin="2,0,0,0"/>
+                    <CheckBox Grid.Column="6" IsEnabled="{Binding IsEnabledCom, Converter={StaticResource BoolToEnabledConverter}}" Content="COM9" IsChecked="{Binding IsCom9}" Margin="2,0,0,0"/>-->
 
                 </StackPanel>
 

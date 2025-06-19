@@ -18,5 +18,12 @@ namespace Vdcp.Service.App.Manager.Model
             WorkNode = "default"
         };
 
+        public static RecordeConfig RecordeConfig { get; set; } = new RecordeConfig()
+        {
+            DefultPath = "C:\\",
+            DefultInput = "default",
+            RecordProfile = "Default"
+        };
+
     }
 }

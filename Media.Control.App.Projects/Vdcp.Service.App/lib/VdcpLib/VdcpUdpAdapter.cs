@@ -80,7 +80,7 @@ namespace VdcpService.lib
                     {
                         State so = (State)ar.AsyncState;
                         int bytes = ClientSocket.EndSend(ar);
-                        Debug.WriteLine("SEND: {0}, {1}", bytes, SendData);
+                        //Debug.WriteLine("SEND: {0}, {1}", bytes, SendData);
                     }
                 }, state);
 

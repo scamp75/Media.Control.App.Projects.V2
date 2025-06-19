@@ -478,109 +478,74 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Margin="2" >
+                    <Grid Background="{DynamicResource  PanleColor1}" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="35"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <DataGrid Grid.Row="2" Grid.ColumnSpan="5" 
-                      materialDesign:DataGridAssist.CellPadding="4 2 2 2"
-                      materialDesign:DataGridAssist.ColumnHeaderPadding="4 2 2 2"
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False"
-                      SelectionMode="Single"
-                      SelectionUnit="FullRow"
-                      FontSize="12"     
-                      ItemsSource="{Binding PortDataInfoList}" >
+                        <TextBlock Text="Recorder Setting" Background="#FF2D2C2B"
+                             Grid.Row="0" Grid.ColumnSpan="2" Height="30"
+                             VerticalAlignment="Center" 
+                             TextAlignment="Center"
+                             FontSize="16" 
+                             Foreground="{DynamicResource ButtonForegroundColor}"/>
 
-                        <DataGrid.Columns>
-                            <materialDesign:DataGridTextColumn Width="50" Header="Port" IsReadOnly="True" >
-                                <DataGridTextColumn.HeaderStyle>
-                                    <Style TargetType="{x:Type DataGridColumnHeader}"
-                                        BasedOn="{StaticResource MaterialDesignDataGridColumnHeader }">
-                                        <Setter Property="ContentTemplate">
-                                            <Setter.Value>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                </DataTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="FontSize" Value="14"/>
-                                        <Setter Property="Height" Value="40"/>
-                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.HeaderStyle>
+                        <TextBlock Text="Defult Path :" 
+                             Grid.Row="1" Grid.Column="0" 
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Right"
+                             Margin="10,0,10,0"
+                             FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
 
-                                <materialDesign:DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                        <Setter Property="TextAlignment" Value="Center"/>
-                                        <Setter Property="Height" Value="25"/>
-                                    </Style>
+                        <TextBlock Text="Record Profile :" 
+                            Grid.Row="2" Grid.Column="0" 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Margin="10,0,10,0"
+                            FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
 
-                                </materialDesign:DataGridTextColumn.ElementStyle>
+                        <TextBlock Text="Defult Input :" 
+                            Grid.Row="3" Grid.Column="0" 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Margin="10,0,10,0"
+                            FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"/>
 
-                                <materialDesign:DataGridTextColumn.Binding>
-                                    <Binding Path="PortName">
-                                    </Binding>
-                                </materialDesign:DataGridTextColumn.Binding>
-                            </materialDesign:DataGridTextColumn>
 
-                            <materialDesign:DataGridTextColumn Width="1*" Header="Macros1" >
-                                <DataGridTextColumn.HeaderStyle>
-                                    <Style TargetType="{x:Type DataGridColumnHeader}"
-                                       BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                        <Setter Property="ContentTemplate">
-                                            <Setter.Value>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                </DataTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="FontSize" Value="14"/>
-                                        <Setter Property="Height" Value="40"/>
+                        <TextBox x:Name="DefultPathTextBox" 
+                            Text="{Binding DefultPath}"
+                            Grid.Row="1" Grid.Column="1"  Margin="2,2,10,2"
+                            FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
+                            Background="{DynamicResource PanleColor}" 
+                            BorderBrush="{DynamicResource ButtonBorderColor}"
+                            BorderThickness="1"/>
 
-                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.HeaderStyle>
 
-                                <materialDesign:DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                        <Setter Property="TextAlignment" Value="Left"/>
-                                    </Style>
-                                </materialDesign:DataGridTextColumn.ElementStyle>
-                                <materialDesign:DataGridTextColumn.Binding>
-                                    <Binding Path="Macros1">
-                                    </Binding>
-                                </materialDesign:DataGridTextColumn.Binding>
-                            </materialDesign:DataGridTextColumn>
+                        <TextBox x:Name="RecordProfileTextBox" 
+                            Text="{Binding RecordProfile}"
+                            Grid.Row="2" Grid.Column="1"  Margin="2,2,10,2"
+                            FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
+                            Background="{DynamicResource PanleColor}" 
+                            BorderBrush="{DynamicResource ButtonBorderColor}"
+                            BorderThickness="1"/>
 
-                            <materialDesign:DataGridTextColumn Width="1*" Header="Macros2" >
-                                <DataGridTextColumn.HeaderStyle>
-                                    <Style TargetType="{x:Type DataGridColumnHeader}"
-                                       BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                        <Setter Property="ContentTemplate">
-                                            <Setter.Value>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                </DataTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="FontSize" Value="14"/>
-                                        <Setter Property="Height" Value="40"/>
+                        <TextBox x:Name="DefultInputTextBox" 
+                             Text="{Binding DefultInput}"
+                             Grid.Row="3" Grid.Column="1"  Margin="2,2,10,2"
+                             FontSize="14" Foreground="{DynamicResource ButtonForegroundColor}"
+                             Background="{DynamicResource PanleColor}" 
+                             BorderBrush="{DynamicResource ButtonBorderColor}"
+                             BorderThickness="1"/>
 
-                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.HeaderStyle>
+                    </Grid>
 
-                                <materialDesign:DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                        <Setter Property="TextAlignment" Value="Left"/>
-                                    </Style>
-                                </materialDesign:DataGridTextColumn.ElementStyle>
-                                <materialDesign:DataGridTextColumn.Binding>
-                                    <Binding Path="Macros2">
-                                    </Binding>
-                                </materialDesign:DataGridTextColumn.Binding>
-                            </materialDesign:DataGridTextColumn>
-
-                        </DataGrid.Columns>
-                    </DataGrid>
 
                 </StackPanel>
 

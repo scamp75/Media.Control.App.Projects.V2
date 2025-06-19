@@ -398,14 +398,15 @@ namespace VdcpService.lib
                         break;
                     case EumCommandKey.CLOSEPORT:
                         PortNum = Convert.ToInt16(RecData[4]);
-                        if (PortNum >= 128)
-                            PortNum = (128 - PortNum);
+                        //if (PortNum >= 128)
+                        //    PortNum = (128 - PortNum);
+                        var port = PortNum > 127 ? (sbyte)PortNum : PortNum;
 
-                        if (OpenPortNumber == PortNum)
+                        if (OpenPortNumber == port)
                         {
                             SendAck();
                             OpenPortConnect = false;
-                            Task.Run(() => EventActionCallbacks(new VdcpEventArgsDefine(key, PortNum)));
+                            Task.Run(() => EventActionCallbacks(new VdcpEventArgsDefine(key, port)));
                         }
                         else
                             SendNak();
@@ -414,19 +415,21 @@ namespace VdcpService.lib
                     case EumCommandKey.SELECTPORT:
 
                         PortNum = Convert.ToInt16(RecData[4]);
-                        if (PortNum >= 128)
-                            PortNum = (128 - PortNum);
+                        //if (PortNum >= 128)
+                        //    PortNum = (128 - PortNum);
 
-                        if (OpenPortConnect && OpenPortNumber == PortNum)
+                        var port1 = PortNum > 127 ? (sbyte)PortNum : PortNum;
+
+                        if (OpenPortConnect && OpenPortNumber == port1)
                         {
                             SendAck();
-                            SelectPortNumber = PortNum;
-                            Task.Run(() => EventActionCallbacks(new VdcpEventArgsDefine(key, PortNum)));
+                            SelectPortNumber = port1;
+                            Task.Run(() => EventActionCallbacks(new VdcpEventArgsDefine(key, port1, false)));
                         }
                         else
                             SendNak();
 
-                        Console.WriteLine($"------------> PortNum :[{PortNum}] ");
+                        Console.WriteLine($"------------> PortNum :[{port1}] ");
 
                         break;
                     case EumCommandKey.RECORDINIT:
@@ -634,11 +637,11 @@ namespace VdcpService.lib
 
                         PortNum = Convert.ToInt16(RecData[4]);
 
-                        if (PortNum >= 128)
-                            PortNum = (128 - PortNum);
+                        //if (PortNum >= 128)
+                        //    PortNum = (128 - PortNum);
 
                         LockMode = Convert.ToInt32(RecData[5]);
-                        OpenPortNumber = PortNum;
+                        OpenPortNumber = PortNum > 127 ? (sbyte)PortNum : PortNum;
 
                         Task.Run(() => EventActionCallbacks(new VdcpEventArgsDefine(key, PortNum, LockMode == 0 ? false : true)));
 
@@ -823,28 +826,34 @@ namespace VdcpService.lib
 
         public void Close()
         {
-
-
-
-            if (PortType == EnuPortType.Serial)
+            try
             {
-                serialPort.DataReceived -= SerialPort_DataReceived;
-                serialPort.ErrorReceived -= SerialPort_ErrorReceived;
+                if (PortType == EnuPortType.Serial)
+                {
+                    if(serialPort == null) return;
 
-                System.Threading.Thread.Sleep(100);
-                Logger.WriteLine(TraceEventType.Information, $"PortName : {PortName} Close");
+                    serialPort.DataReceived -= SerialPort_DataReceived;
+                    serialPort.ErrorReceived -= SerialPort_ErrorReceived;
 
-                serialPort = null;
+                    System.Threading.Thread.Sleep(100);
+                    Logger.WriteLine(TraceEventType.Information, $"PortName : {PortName} Close");
+
+                    serialPort = null;
+                }
+                else
+                {
+                    if (ServerAdapter == null) return;
+                    ServerAdapter.ReciveData -= UdpAdapter_ReciveData;
+                    ServerAdapter.Close();
+
+                    ServerAdapter = null;
+                    Logger.WriteLine(TraceEventType.Information, $"Name : {PortName} Close");
+                }
             }
-            else
+            catch
             {
-                ServerAdapter.ReciveData -= UdpAdapter_ReciveData;
-                ServerAdapter.Close();
 
-                ServerAdapter = null;
-                Logger.WriteLine(TraceEventType.Information, $"Name : {PortName} Close");
             }
-
         }
 
         public void AddActionEventDelegate(VdcpActionEventDelegate callback)

@@ -8,11 +8,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Windows.Interop;
 using Vdcp.Service.App.Manager.ViewModel;
 using Vdcp.Service.App.Manager.View;
+using Media.Control.App.Api;
+
 
 namespace Vdcp.Service.App.Manager
 {
@@ -53,6 +58,9 @@ namespace Vdcp.Service.App.Manager
    
         private MainWindowsViewModel mainWindowViewModel = null;
         private NotifyIcon _notifyIcon; // 트레이 아이콘
+
+        private IHost _webHost; // ASP.NET Core 호스트 인스턴스
+
         public MainWindow()
         {
             InitializeComponent();
@@ -60,10 +68,12 @@ namespace Vdcp.Service.App.Manager
             this.DataContext = mainWindowViewModel;
 
             StopServiceButton.IsEnabled = false; // 초기화 시 종료 버튼 비활성화
-
+            StartService();
           //  this.WindowState = WindowState.Maximized;
 
             InitializeTrayIcon();
+
+
         }
 
         private Icon ConvertByteArrayToIcon(byte[] iconData)
@@ -130,12 +140,20 @@ namespace Vdcp.Service.App.Manager
         {
             try
             {
+                if (_webHost != null )
+                {
+                    _webHost.StopAsync();
+                    _webHost = null;
+                }
+                    
                 StartServiceButton.IsEnabled = true;  // 시작 버튼 활성화
                 StopServiceButton.IsEnabled = false; // 종료 버튼 비활성화
                 mainWindowViewModel.IsIndeterminate = false;
                 mainWindowViewModel.ApiMessage = "Vdcp Service Stop...";
                 mainWindowViewModel.isServiceRunning = false;
                 mainWindowViewModel.IsEnabledCom = true;
+                
+                 mainWindowViewModel.Close(); // ViewModel 종료
                 //}
             }
             catch (Exception ex)
@@ -172,6 +190,7 @@ namespace Vdcp.Service.App.Manager
 
         private async void StartServiceButton_Click(object sender, RoutedEventArgs e)
         {
+           
             StartService();
         }
 
@@ -188,6 +207,19 @@ namespace Vdcp.Service.App.Manager
         {
             try
             {
+                if (_webHost == null)
+                {
+                    // ASP.NET Core 호스트 빌드
+                    _webHost = CreateHostBuilder().Build();
+                }
+
+                if (_webHost != null)
+                    await _webHost.StartAsync();
+
+                await mainWindowViewModel.ConnectApi(); // API 연결 시작
+
+                await mainWindowViewModel.CreatComPort(); // COM 포트 생성 시작
+
                 StartServiceButton.IsEnabled = false;  // 시작 버튼 비활성화
                 StopServiceButton.IsEnabled = true;   // 종료 버튼 활성화
                 mainWindowViewModel.IsIndeterminate = true;
@@ -202,6 +234,21 @@ namespace Vdcp.Service.App.Manager
             {
                 System.Windows.MessageBox.Show($"서비스 시작 중 오류가 발생했습니다: {ex.Message}", "오류");
             }
+        }
+
+        private static IHostBuilder CreateHostBuilder()
+        {
+            return Host.CreateDefaultBuilder()
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole(); // 콘솔에 로그 출력
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseUrls("http://0.0.0.0:5050"); // 서비스 URL
+                    webBuilder.UseStartup<Startup>(); // Startup 클래스 지정
+                });
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

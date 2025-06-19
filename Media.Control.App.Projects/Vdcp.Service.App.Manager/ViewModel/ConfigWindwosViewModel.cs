@@ -14,6 +14,7 @@ namespace Vdcp.Service.App.Manager.ViewModel
     public class ConfigWindwosViewModel : INotifyPropertyChanged
     {
         private AmppConfig amppConfig = null;
+        private RecordeConfig recordeConfig = null;
         private ObservableCollection<PortDataInfo> _PortDataInfoList;
         public ObservableCollection<PortDataInfo> PortDataInfoList
         {
@@ -138,6 +139,52 @@ namespace Vdcp.Service.App.Manager.ViewModel
             }
         }
 
+        private string _DefultPath;
+
+        public string DefultPath
+        {
+            get => _DefultPath;
+            set
+            {
+                if (_DefultPath != value)
+                {
+                    _DefultPath = value;
+                    OnPropertyChanged(nameof(DefultPath));
+                }
+            }
+        }
+
+        private string _RecordProfile;
+        public string RecordProfile
+        {
+            get => _RecordProfile;
+            set
+            {
+                if (_RecordProfile != value)
+                {
+                    _RecordProfile = value;
+                    OnPropertyChanged(nameof(RecordProfile));
+                }
+            }
+        }
+
+
+        private string _DefultInput;
+
+        public string DefultInput
+        {
+            get => _DefultInput;
+            set
+            {
+                if (_DefultInput != value)
+                {
+                    _DefultInput = value;
+                    OnPropertyChanged(nameof(DefultInput));
+                }
+            }
+        }
+
+
         private ConfigWindwos _configWindwos;
 
         public ConfigWindwosViewModel(ConfigWindwos windwos)
@@ -191,7 +238,18 @@ namespace Vdcp.Service.App.Manager.ViewModel
             // 파일로 저장
             System.IO.File.WriteAllText($"{bacePath}AmppConfig.json", jsonString);
 
-            foreach(var portData in PortDataInfoList)
+            RecordeConfig recordeConfig = new RecordeConfig
+            {
+                DefultPath = DefultPath,
+                RecordProfile = RecordProfile,
+                DefultInput = DefultInput
+            };
+
+            jsonString = System.Text.Json.JsonSerializer.Serialize(recordeConfig, new JsonSerializerOptions { WriteIndented = true });
+            // 파일로 저장
+            System.IO.File.WriteAllText($"{bacePath}RecordeConfig.json", jsonString);
+
+            foreach (var portData in PortDataInfoList)
             {
                 if (portData.SelectPort != 0 && portData.Type != string.Empty)
                 {
@@ -225,6 +283,19 @@ namespace Vdcp.Service.App.Manager.ViewModel
                     PlatformKey = amppConfig.PlatformKey;
                     WorkNode = amppConfig.WorkNode;
                     Fabric = amppConfig.Fabric;
+                }
+            }
+
+            if (System.IO.File.Exists($"{bacePath}RecordeConfig.json"))
+            {
+               string jsonString = System.IO.File.ReadAllText($"{bacePath}RecordeConfig.json");
+               recordeConfig = System.Text.Json.JsonSerializer.Deserialize<RecordeConfig>(jsonString);
+
+                if (recordeConfig != null)
+                {
+                    DefultPath = recordeConfig.DefultPath;
+                    RecordProfile = recordeConfig.RecordProfile;
+                    DefultInput = recordeConfig.DefultInput;
                 }
             }
 

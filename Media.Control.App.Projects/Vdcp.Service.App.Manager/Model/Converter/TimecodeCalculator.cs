@@ -81,6 +81,7 @@ namespace Vdcp.Service.App.Manager.Model
 
 
             FPS = fps;
+            
             ref_fps = (ulong)Math.Ceiling(FPS);
 
 

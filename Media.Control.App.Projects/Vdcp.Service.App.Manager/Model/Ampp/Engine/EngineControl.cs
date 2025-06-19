@@ -28,20 +28,24 @@ namespace Vdcp.Service.App.Manager.Model.Engine
         private AmppControlLib amppControl { get; set; }
 
         public int TIME_SECONDS { get; set; } = 300;
+        public int Index { get; set; } = 0;
 
+        public string MediaState { get; set; } = "Idle";
 
+        public string WorkLoad { get; set; }
 
-        public EngineControl(AmppConfig amppConfig, string AmppWorkLoad, string reconKey)
+        public EngineControl(AmppConfig amppConfig, string AmppWorkLoad, string reconKey, int index )
         {   
-                amppControl = new AmppControlLib(amppConfig.PlatformUrl, amppConfig.PlatformKey, AmppWorkLoad);
+            amppControl = new AmppControlLib(amppConfig.PlatformUrl, amppConfig.PlatformKey, AmppWorkLoad);
     
-                amppControl.ReconKey = reconKey == "" ? ReconKey : reconKey;
-                amppControl.OnAmppControlErrorEvent += AmppControl_OnAmppControlErrorEvent;
-                amppControl.OnAmppControlNotifyEvent += AmppControl_OnAmppControlNotifyEvent;
-                amppControl.OnStateEvent += AmppControl_OnStateEvent;
+            amppControl.ReconKey = $"{reconKey}_{index}";
+            amppControl.OnAmppControlErrorEvent += AmppControl_OnAmppControlErrorEvent;
+            amppControl.OnAmppControlNotifyEvent += AmppControl_OnAmppControlNotifyEvent;
+            amppControl.OnStateEvent += AmppControl_OnStateEvent;
 
-                EnagineName = reconKey;
-            
+            EnagineName = $"{reconKey}_{index}";
+            WorkLoad = AmppWorkLoad;
+            Index = index;
         }
 
         public  Task<bool> Connect()
@@ -119,9 +123,9 @@ namespace Vdcp.Service.App.Manager.Model.Engine
         }
 
 
-        public Task<bool> PutMacro(string uid, AmppControlMacro payload)
+        public async Task<bool> PutMacro(string uid, AmppControlMacro payload)
         {
-            return amppControl?.PutMacroAsyne(uid, payload);
+            return await amppControl?.PutMacroAsyne(uid, payload);
         }
 
         private void AmppControl_OnStateEvent(string message)
