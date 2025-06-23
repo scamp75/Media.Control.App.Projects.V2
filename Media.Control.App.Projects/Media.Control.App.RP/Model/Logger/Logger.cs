@@ -28,7 +28,7 @@ namespace Media.Control.App.RP.Model.Logger
         public Logger() 
         {
             ApiConnecter = new MediaApiConnecter("loghub");
-            ApiConnecter.IpAddress = SystemConfigDataStatic.ControlConfigData.MediaViewSetting.Url;
+            ApiConnecter.IpAddress = SystemConfigDataStatic.ControlConfigData?.MediaViewSetting.Url;
             ApiConnecter.Connection();
             ApiConnecter.DoHubEventSend += ApiConnecter_DoHubEventSend;
 

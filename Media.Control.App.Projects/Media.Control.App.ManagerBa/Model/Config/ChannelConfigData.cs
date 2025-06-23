@@ -12,6 +12,8 @@ namespace Media.Control.App.ManagerBa.Model.Config
 
         public AmppConfig AmppConfig { get; set; }
 
+        public VdcpConfig VdcpConfigs { get; set; }
+
         public List<ChannelConfig> ChannelList { get; set; }
         
         public List<OverlayFilter> OverlayFilters { get; set; }   
@@ -21,6 +23,7 @@ namespace Media.Control.App.ManagerBa.Model.Config
         public ChannelConfigData() 
         { 
             AmppConfig = new AmppConfig();
+            VdcpConfigs = new VdcpConfig();
             ChannelList = new List<ChannelConfig>();
             OverlayFilters = new List<OverlayFilter>();
             InPutList = new List<InputConfigData>(); 

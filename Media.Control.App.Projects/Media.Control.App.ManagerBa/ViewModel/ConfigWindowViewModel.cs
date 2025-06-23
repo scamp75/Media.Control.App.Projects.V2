@@ -18,6 +18,7 @@ using System.Windows.Documents;
 using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 
+
 namespace Media.Control.App.ManagerBa.ViewModel
 {
     public partial class ConfigWindowViewModel : INotifyPropertyChanged
@@ -41,6 +42,12 @@ namespace Media.Control.App.ManagerBa.ViewModel
 
 
 
+        public ObservableCollection<EnuVdcpType> PortTypeList { get; set; } 
+
+        public ObservableCollection<string> ComPortList { get; set; } 
+
+        public ObservableCollection<int> SelectPortList { get; set; } 
+
         public ObservableCollection<OverlayFilter> OverlayFiltersList { get; set; }
        
         public ObservableCollection<ChannelConfig> ChannelSettingList { get; set; }
@@ -61,7 +68,6 @@ namespace Media.Control.App.ManagerBa.ViewModel
 
         public ObservableCollection<EnuEnaginType> EngineTypeList { get; set; } 
 
-        public ObservableCollection<EnuOverlayMode> OverlayItemsMode { get; set; } 
 
         public List<EnuChannelType> ChannelTypeList { get; set; }
 
@@ -86,7 +92,17 @@ namespace Media.Control.App.ManagerBa.ViewModel
                 OnPropertyChanged();
             } 
         }
+        private EnuVdcpType _SelectPortType { get; set; }
 
+        public EnuVdcpType SelectPortType
+        {
+            set
+            {
+                _SelectPortType = value;
+                OnPropertyChanged(nameof(_SelectPortType));
+            }
+            get { return _SelectPortType; }
+        }
 
         private PlayerCleancutConfig selectedPlayerItem { get; set; }  
         public PlayerCleancutConfig SelectedPlayerItem
@@ -238,6 +254,24 @@ namespace Media.Control.App.ManagerBa.ViewModel
             OverlayModeList.Add(EnuOverlayMode.NDI);
             OverlayModeList.Add(EnuOverlayMode.Decklink);
 
+            PortTypeList = new ObservableCollection<EnuVdcpType>();
+            PortTypeList.Add(EnuVdcpType.Serial);
+            PortTypeList.Add(EnuVdcpType.Udp);
+
+
+            ComPortList = new ObservableCollection<string>();
+
+            for (int i = 3; i < 9; i++)
+            {
+                string port = $"COM{i}";
+                ComPortList.Add(port);
+            }
+
+            SelectPortList = new ObservableCollection<int>
+            {
+                 -1, -2 , -3, -4, -5, -6, -7, -8, -9,
+                 1, 2 , 3, 4, 5, 6, 7, 8, 9
+            };
 
             InputSettingList = new ObservableCollection<InputConfigData>
             {
@@ -248,10 +282,12 @@ namespace Media.Control.App.ManagerBa.ViewModel
 
             EngineTypeList = new ObservableCollection<EnuEnaginType>();
             EngineTypeList.Add(EnuEnaginType.Ampp);
-            EngineTypeList.Add(EnuEnaginType.Amp);
+            EngineTypeList.Add(EnuEnaginType.Vdcp);
 
             GridRow2Heigth = window.GridRowHeigth;
             SelectOverlaySetting = EnuOverlayMode.None;
+            
+
 
             SetHotKeyInit();
             DisplaySystemConfig();
@@ -488,6 +524,17 @@ namespace Media.Control.App.ManagerBa.ViewModel
             systemConfigData.ChannelConfigData.AmppConfig.WorkNode = WorkNode;
             systemConfigData.ChannelConfigData.AmppConfig.Fabric = Fabric;
             //////////////////////////////////////////////////////////////////////////////////
+            ///
+            systemConfigData.ChannelConfigData.VdcpConfigs.VdcpPortConfigs.Clear();
+
+            systemConfigData.ChannelConfigData.VdcpConfigs.IpAddress = PortIpAddress;
+            systemConfigData.ChannelConfigData.VdcpConfigs.VdcpType = SelectPortType;
+
+
+
+            //systemConfigData.ChannelConfigData.VdcpConfigs.VdcpPortConfigs 
+
+
             systemConfigData.ChannelConfigData.ChannelList.Clear();
             systemConfigData.ChannelConfigData.ChannelList = ChannelSettingList.ToList();
 

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Media.Control.App.ManagerBa.View"
         xmlns:local1="clr-namespace:Media.Control.App.ManagerBa"
         xmlns:Model="clr-namespace:Media.Control.App.ManagerBa.Model"
+        xmlns:Config="clr-namespace:Media.Control.App.ManagerBa.Model.Config"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:materialDesignConverters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
@@ -58,6 +59,8 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <Model:StringToBoolConverter x:Key="StringToBoolConverter"/>
+            <Model:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
+            
             
         </ResourceDictionary>
 
@@ -78,94 +81,218 @@
 
                     <TabControl >
                         <TabItem Header="Engine/Channel" Background="{DynamicResource  MaterialDesignShadowBrush}">
-                            <Grid  Height="1200" Background="{DynamicResource  MaterialDesignDarkSeparatorBackground }">
+                            <Grid  Height="1300" Background="{DynamicResource  MaterialDesignDarkSeparatorBackground }">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="50"/>
-                                    <RowDefinition Height="260"/>
-                                    <RowDefinition Height="350"/>
-                                    <RowDefinition Height="280"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!--<StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" >-->
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Engine :" Foreground="WhiteSmoke" Margin="15" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                                <ComboBox Grid.Column="1" HorizontalAlignment="Left"
-                                    x:Name="ComEngineType" Width="150" Height="35" Foreground="WhiteSmoke"
-                                    IsEnabled="{Binding IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
-                                    ItemsSource="{Binding EngineTypeList}"
-                                    SelectedItem="{Binding SelectEnaginType}"
-                                    Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+                                <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" >
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Engine :" Foreground="WhiteSmoke" 
+                                               Margin="15" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                    
+                                    <ComboBox Grid.Column="1" HorizontalAlignment="Left"
+                                        x:Name="ComEngineType" Width="150" Height="35" Foreground="WhiteSmoke"
+                                              SelectionChanged="ComEngineType_SelectionChanged"
+                                        IsEnabled="{Binding IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                        ItemsSource="{Binding EngineTypeList}"
+                                        SelectedItem="{Binding SelectEnaginType, Mode=TwoWay}"
+                                        Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+                                </StackPanel>
 
-                                <!--</StackPanel>-->
+                                <StackPanel x:Name="VdcpPanel" Grid.Row="1" Grid.ColumnSpan="2"
+                                          Visibility="{Binding SelectEnaginType,
+                                          Converter={StaticResource EnumToVisibilityConverter},
+                                          ConverterParameter={x:Static Model:EnuEnaginType.Vdcp}}">         
+                                    
+                                    <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Header="Vdcp Setting"  
+                                        Foreground="WhiteSmoke" 
+                                         
+                                        Style="{StaticResource  MaterialDesignCardGroupBox}" FontSize="12"> 
+                                        <GroupBox.HeaderTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Width="28" Height="28" VerticalAlignment="Center" Kind="Blur" />
+                                                    <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignTitleSmallTextBlock}"
+                                                        Foreground="{StaticResource TitleColor}" Text="{Binding}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GroupBox.HeaderTemplate>
 
-                                <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Header="AMMP Setting"  
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="10"/>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="40"/>
+
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Port Type  :" TextAlignment="Right" Margin="10"  />
+                                            <ComboBox Grid.Row="1" Grid.Column="1" Name="PortTypeName" ItemsSource="{Binding PortTypeList}" 
+                                                      SelectedItem="{Binding SelectPortType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Width="150"  HorizontalAlignment="Left"/>
+
+                                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtIpAddress"  Width="200"  HorizontalAlignment="Left" Margin="200,0,0,0"
+                                                    Text="{Binding PortIpAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    Visibility="{Binding SelectPortType,   Converter={StaticResource EnumToVisibilityConverter},
+                                                        ConverterParameter={x:Static Model:EnuVdcpType.Udp}}" />
+
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Com Port :" TextAlignment="Right" Margin="10" />
+                                            
+                                            <ComboBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left"
+                                                      ItemsSource="{Binding ComPortList}" 
+                                                      SelectedItem="{Binding ComPort1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+                                            <ComboBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="120,0,0,0"
+                                                      ItemsSource="{Binding ComPortList}" 
+                                                      SelectedItem="{Binding ComPort2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+                                            <ComboBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="240,0,0,0"
+                                                       ItemsSource="{Binding ComPortList}" 
+                                                       SelectedItem="{Binding ComPort3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                                            <ComboBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="360,0,0,0"
+                                                        ItemsSource="{Binding ComPortList}" 
+                                                        SelectedItem="{Binding ComPort4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+
+
+
+                                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Select Port :" TextAlignment="Right" Margin="10" />
+                                            <ComboBox Grid.Row="3" Grid.Column="1"  Width="100" HorizontalAlignment="Left" 
+                                                      ItemsSource="{Binding SelectPortList}" 
+                                                      SelectedItem="{Binding SelectPort1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+                                            <ComboBox Grid.Row="3" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="120,0,0,0"
+                                                       ItemsSource="{Binding SelectPortList}" 
+                                                       SelectedItem="{Binding SelectPort2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+                                            <ComboBox Grid.Row="3" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="240,0,0,0"
+                                                    ItemsSource="{Binding SelectPortList}" 
+                                                    SelectedItem="{Binding SelectPort3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+                                            <ComboBox Grid.Row="3" Grid.Column="1" Width="100" HorizontalAlignment="Left" Margin="360,0,0,0"
+                                                    ItemsSource="{Binding SelectPortList}" 
+                                                    SelectedItem="{Binding SelectPort4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+
+
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="IpAddress / Port :" TextAlignment="Right" Margin="10" />
+                                          
+                                            <TextBox Grid.Row="4" Grid.Column="1"  Width="100" HorizontalAlignment="Left" 
+                                                     Text="{Binding IpPort1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     Visibility="{Binding SelectPortType,   Converter={StaticResource EnumToVisibilityConverter},
+                                                    ConverterParameter={x:Static Model:EnuVdcpType.Udp}}" />
+
+                                            <TextBox Grid.Row="4" Grid.Column="1"  Width="100" HorizontalAlignment="Left" Margin="120,0,0,0"
+                                                    Text="{Binding IpPort2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     Visibility="{Binding SelectPortType,   Converter={StaticResource EnumToVisibilityConverter},
+                                                    ConverterParameter={x:Static Model:EnuVdcpType.Udp}}" />
+
+                                            <TextBox Grid.Row="4" Grid.Column="1"  Width="100" HorizontalAlignment="Left" Margin="240,0,0,0"
+                                                    Text="{Binding IpPort3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     Visibility="{Binding SelectPortType,   Converter={StaticResource EnumToVisibilityConverter},
+                                                    ConverterParameter={x:Static Model:EnuVdcpType.Udp}}" />
+
+                                            <TextBox Grid.Row="4" Grid.Column="1"  Width="100" HorizontalAlignment="Left" Margin="360,0,0,0"
+                                                    Text="{Binding IpPort4, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     Visibility="{Binding SelectPortType,   Converter={StaticResource EnumToVisibilityConverter},
+                                                    ConverterParameter={x:Static Model:EnuVdcpType.Udp}}" />
+
+
+
+                                        </Grid>
+                                    </GroupBox>
+
+                                </StackPanel>
+
+
+                                <StackPanel x:Name="AmppPanel" Grid.Row="2" Grid.ColumnSpan="2"
+                                         Visibility="{Binding SelectEnaginType,
+                                         Converter={StaticResource EnumToVisibilityConverter},
+                                         ConverterParameter={x:Static Model:EnuEnaginType.Ampp}}">
+                                    <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Header="AMMP Setting"  
                                           Foreground="WhiteSmoke" 
                                           Style="{StaticResource  MaterialDesignCardGroupBox}" FontSize="12">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <materialDesign:PackIcon Width="28" Height="28" VerticalAlignment="Center" Kind="Blur" />
-                                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignTitleSmallTextBlock}"
+                                        <GroupBox.HeaderTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Width="28" Height="28" VerticalAlignment="Center" Kind="Blur" />
+                                                    <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignTitleSmallTextBlock}"
                                                            Foreground="{StaticResource TitleColor}" Text="{Binding}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GroupBox.HeaderTemplate>
 
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="10"/>
-                                            <RowDefinition Height="40"/>
-                                            <RowDefinition Height="40"/>
-                                            <RowDefinition Height="40"/>
-                                            <RowDefinition Height="40"/>
-                                            
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="120"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="10"/>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="40"/>
+                                                <RowDefinition Height="40"/>
 
-                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="PlatformUrl :" TextAlignment="Right" Margin="10"  />
-                                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPlatformUrl" Text="{Binding PlatformUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="ApiKey :" TextAlignment="Right" Margin="10" />
-                                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtApiKey" Text="{Binding ApiKey , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Text="PlatformUrl :" TextAlignment="Right" Margin="10"  />
+                                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPlatformUrl" Text="{Binding PlatformUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="WorkNode :" TextAlignment="Right" Margin="10" />
-                                        <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtWorkNode" Text="{Binding WorkNode , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="ApiKey :" TextAlignment="Right" Margin="10" />
+                                            <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtApiKey" Text="{Binding ApiKey , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Fabric :" TextAlignment="Right" Margin="10" />
-                                        <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtFabric" Text="{Binding Fabric , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Grid.Row="3" Grid.Column="0" Text="WorkNode :" TextAlignment="Right" Margin="10" />
+                                            <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtWorkNode" Text="{Binding WorkNode , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                    </Grid>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Fabric :" TextAlignment="Right" Margin="10" />
+                                            <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtFabric" Text="{Binding Fabric , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Grid>
+                                    </GroupBox>
+
+                                    <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Margin="10" Header="Channel Setting" 
+                                          Style="{StaticResource  MaterialDesignCardGroupBox}" FontSize="12">
+                                        <GroupBox.HeaderTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Width="28" Height="28" VerticalAlignment="Center" Kind="Blur" />
+                                                    <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignTitleSmallTextBlock}" Foreground="{StaticResource TitleColor}" Text="{Binding}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+
+                                        </GroupBox.HeaderTemplate>
+
+                                        <Grid >
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="10"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="40"/>
+                                            </Grid.RowDefinitions>
 
 
-                                </GroupBox>
-
-                                <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Margin="10" Header="Channel Setting" Style="{StaticResource  MaterialDesignCardGroupBox}" FontSize="12">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <materialDesign:PackIcon Width="28" Height="28" VerticalAlignment="Center" Kind="Blur" />
-                                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignTitleSmallTextBlock}" Foreground="{StaticResource TitleColor}" Text="{Binding}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-
-                                    </GroupBox.HeaderTemplate>
-
-                                    <Grid >
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="10"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="40"/>
-                                        </Grid.RowDefinitions>
-                                       
-
-                                        <DataGrid Grid.Row="1" Grid.ColumnSpan="5" Margin="0,15,0,0"
+                                            <DataGrid Grid.Row="1" Grid.ColumnSpan="5" Margin="0,15,0,0"
                                             materialDesign:DataGridAssist.CellPadding="4 2 2 2"
                                             materialDesign:DataGridAssist.ColumnHeaderPadding="4 2 2 2"
                                             AutoGenerateColumns="False"
@@ -176,40 +303,40 @@
                                             SelectedItem="{Binding SelectedChannelItem}" 
                                             ItemsSource="{Binding ChannelSettingList}" >
 
-                                            <DataGrid.Columns>
+                                                <DataGrid.Columns>
 
-                                                <materialDesign:DataGridTextColumn Width="80" Header="Channel" >
-                                                    <DataGridTextColumn.HeaderStyle>
-                                                        <Style TargetType="{x:Type DataGridColumnHeader}"
+                                                    <materialDesign:DataGridTextColumn Width="80" Header="Channel" >
+                                                        <DataGridTextColumn.HeaderStyle>
+                                                            <Style TargetType="{x:Type DataGridColumnHeader}"
                                                             BasedOn="{StaticResource MaterialDesignDataGridColumnHeader }">
-                                                            <Setter Property="ContentTemplate">
-                                                                <Setter.Value>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                                    </DataTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="FontSize" Value="14"/>
-                                                            <Setter Property="Height" Value="40"/>
-                                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                                        </Style>
-                                                    </DataGridTextColumn.HeaderStyle>
+                                                                <Setter Property="ContentTemplate">
+                                                                    <Setter.Value>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
+                                                                        </DataTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="FontSize" Value="14"/>
+                                                                <Setter Property="Height" Value="40"/>
+                                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                            </Style>
+                                                        </DataGridTextColumn.HeaderStyle>
 
-                                                    <materialDesign:DataGridTextColumn.ElementStyle>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                                            <Setter Property="TextAlignment" Value="Center"/>
-                                                            <Setter Property="Height" Value="25"/>
-                                                        </Style>
+                                                        <materialDesign:DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                                <Setter Property="TextAlignment" Value="Center"/>
+                                                                <Setter Property="Height" Value="25"/>
+                                                            </Style>
 
-                                                    </materialDesign:DataGridTextColumn.ElementStyle>
+                                                        </materialDesign:DataGridTextColumn.ElementStyle>
 
-                                                    <materialDesign:DataGridTextColumn.Binding>
-                                                        <Binding Path="Channel">
-                                                        </Binding>
-                                                    </materialDesign:DataGridTextColumn.Binding>
-                                                </materialDesign:DataGridTextColumn>
+                                                        <materialDesign:DataGridTextColumn.Binding>
+                                                            <Binding Path="Channel">
+                                                            </Binding>
+                                                        </materialDesign:DataGridTextColumn.Binding>
+                                                    </materialDesign:DataGridTextColumn>
 
-                                                <materialDesign:DataGridComboBoxColumn
+                                                    <materialDesign:DataGridComboBoxColumn
                                                     Width="80"
                                                     Header="Type"
                                                     IsEditable="True"
@@ -217,118 +344,118 @@
                                                     ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.ChannelTypeList}"
                                                     SelectedValueBinding="{Binding ChannelType}">
 
-                                                    <DataGridComboBoxColumn.HeaderStyle>
-                                                        <Style TargetType="{x:Type DataGridColumnHeader}"
+                                                        <DataGridComboBoxColumn.HeaderStyle>
+                                                            <Style TargetType="{x:Type DataGridColumnHeader}"
                                                         BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                                            <Setter Property="ContentTemplate">
-                                                                <Setter.Value>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                                    </DataTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="FontSize" Value="14"/>
-                                                            <Setter Property="Height" Value="40"/>
+                                                                <Setter Property="ContentTemplate">
+                                                                    <Setter.Value>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
+                                                                        </DataTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="FontSize" Value="14"/>
+                                                                <Setter Property="Height" Value="40"/>
 
-                                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                                        </Style>
-                                                    </DataGridComboBoxColumn.HeaderStyle>
-                                                </materialDesign:DataGridComboBoxColumn>
+                                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                            </Style>
+                                                        </DataGridComboBoxColumn.HeaderStyle>
+                                                    </materialDesign:DataGridComboBoxColumn>
 
 
-                                                <materialDesign:DataGridTextColumn Width="100" Header="Name" >
+                                                    <materialDesign:DataGridTextColumn Width="100" Header="Name" >
 
-                                                    <DataGridTextColumn.HeaderStyle>
-                                                        <Style TargetType="{x:Type DataGridColumnHeader}"
+                                                        <DataGridTextColumn.HeaderStyle>
+                                                            <Style TargetType="{x:Type DataGridColumnHeader}"
                                                             BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                                            <Setter Property="ContentTemplate">
-                                                                <Setter.Value>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                                    </DataTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="FontSize" Value="14"/>
-                                                            <Setter Property="Height" Value="40"/>
+                                                                <Setter Property="ContentTemplate">
+                                                                    <Setter.Value>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
+                                                                        </DataTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="FontSize" Value="14"/>
+                                                                <Setter Property="Height" Value="40"/>
 
-                                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                                        </Style>
-                                                    </DataGridTextColumn.HeaderStyle>
+                                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                            </Style>
+                                                        </DataGridTextColumn.HeaderStyle>
 
 
-                                                    <materialDesign:DataGridTextColumn.ElementStyle>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                                            <Setter Property="TextAlignment" Value="Center"/>
-                                                        </Style>
-                                                    </materialDesign:DataGridTextColumn.ElementStyle>
-                                                    <materialDesign:DataGridTextColumn.Binding>
-                                                        <Binding Path="Name" Mode="TwoWay">
-                                                        </Binding>
-                                                    </materialDesign:DataGridTextColumn.Binding>
-                                                </materialDesign:DataGridTextColumn>
+                                                        <materialDesign:DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                                <Setter Property="TextAlignment" Value="Center"/>
+                                                            </Style>
+                                                        </materialDesign:DataGridTextColumn.ElementStyle>
+                                                        <materialDesign:DataGridTextColumn.Binding>
+                                                            <Binding Path="Name" Mode="TwoWay">
+                                                            </Binding>
+                                                        </materialDesign:DataGridTextColumn.Binding>
+                                                    </materialDesign:DataGridTextColumn>
 
-                                                <materialDesign:DataGridTextColumn Width="230" Header="WorkLoad1" >
-                                                    <DataGridTextColumn.HeaderStyle>
-                                                        <Style TargetType="{x:Type DataGridColumnHeader}"
+                                                    <materialDesign:DataGridTextColumn Width="230" Header="WorkLoad1" >
+                                                        <DataGridTextColumn.HeaderStyle>
+                                                            <Style TargetType="{x:Type DataGridColumnHeader}"
                                                             BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                                            <Setter Property="ContentTemplate">
-                                                                <Setter.Value>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                                    </DataTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="FontSize" Value="14"/>
-                                                            <Setter Property="Height" Value="40"/>
+                                                                <Setter Property="ContentTemplate">
+                                                                    <Setter.Value>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
+                                                                        </DataTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="FontSize" Value="14"/>
+                                                                <Setter Property="Height" Value="40"/>
 
-                                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                                        </Style>
-                                                    </DataGridTextColumn.HeaderStyle>
-
-
-                                                    <materialDesign:DataGridTextColumn.ElementStyle>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                                            <Setter Property="TextAlignment" Value="Left"/>
-                                                        </Style>
-                                                    </materialDesign:DataGridTextColumn.ElementStyle>
-                                                    <materialDesign:DataGridTextColumn.Binding>
-                                                        <Binding Path="WorkLoad1">
-                                                        </Binding>
-                                                    </materialDesign:DataGridTextColumn.Binding>
-                                                </materialDesign:DataGridTextColumn>
+                                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                            </Style>
+                                                        </DataGridTextColumn.HeaderStyle>
 
 
-                                                <materialDesign:DataGridTextColumn Width="230" Header="WorkLoad2" >
-                                                    <DataGridTextColumn.HeaderStyle>
-                                                        <Style TargetType="{x:Type DataGridColumnHeader}"
+                                                        <materialDesign:DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                                <Setter Property="TextAlignment" Value="Left"/>
+                                                            </Style>
+                                                        </materialDesign:DataGridTextColumn.ElementStyle>
+                                                        <materialDesign:DataGridTextColumn.Binding>
+                                                            <Binding Path="WorkLoad1">
+                                                            </Binding>
+                                                        </materialDesign:DataGridTextColumn.Binding>
+                                                    </materialDesign:DataGridTextColumn>
+
+
+                                                    <materialDesign:DataGridTextColumn Width="230" Header="WorkLoad2" >
+                                                        <DataGridTextColumn.HeaderStyle>
+                                                            <Style TargetType="{x:Type DataGridColumnHeader}"
                                                             BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                                                            <Setter Property="ContentTemplate">
-                                                                <Setter.Value>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
-                                                                    </DataTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="FontSize" Value="14"/>
-                                                            <Setter Property="Height" Value="40"/>
+                                                                <Setter Property="ContentTemplate">
+                                                                    <Setter.Value>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding}" TextAlignment="Center" TextWrapping="Wrap" />
+                                                                        </DataTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="FontSize" Value="14"/>
+                                                                <Setter Property="Height" Value="40"/>
 
-                                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                                        </Style>
-                                                    </DataGridTextColumn.HeaderStyle>
+                                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                            </Style>
+                                                        </DataGridTextColumn.HeaderStyle>
 
 
-                                                    <materialDesign:DataGridTextColumn.ElementStyle>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                                            <Setter Property="TextAlignment" Value="Left"/>
-                                                        </Style>
-                                                    </materialDesign:DataGridTextColumn.ElementStyle>
-                                                    <materialDesign:DataGridTextColumn.Binding>
-                                                        <Binding Path="WorkLoad2">
-                                                        </Binding>
-                                                    </materialDesign:DataGridTextColumn.Binding>
-                                                </materialDesign:DataGridTextColumn>
+                                                        <materialDesign:DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                                <Setter Property="TextAlignment" Value="Left"/>
+                                                            </Style>
+                                                        </materialDesign:DataGridTextColumn.ElementStyle>
+                                                        <materialDesign:DataGridTextColumn.Binding>
+                                                            <Binding Path="WorkLoad2">
+                                                            </Binding>
+                                                        </materialDesign:DataGridTextColumn.Binding>
+                                                    </materialDesign:DataGridTextColumn>
 
-                                                <!--<materialDesign:DataGridTextColumn Width="230" Header="Workload2" >
+                                                    <!--<materialDesign:DataGridTextColumn Width="230" Header="Workload2" >
                                                     <DataGridTextColumn.HeaderStyle>
                                                         <Style TargetType="{x:Type DataGridColumnHeader}"
                                                              BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
@@ -357,22 +484,23 @@
                                                         </Binding>
                                                     </materialDesign:DataGridTextColumn.Binding>
                                                 </materialDesign:DataGridTextColumn>-->
-                                                
-                                            </DataGrid.Columns>
-                                        </DataGrid>
 
-                                        <StackPanel Grid.Row="2" Grid.ColumnSpan="5" Orientation="Horizontal">
-                                            <Button Grid.ColumnSpan="3" Margin="250,5,0,0" FontWeight="Bold" Foreground="{StaticResource ButtonBackColor}" Content="Add Channel" FontSize="12" Height="30" 
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+
+                                            <StackPanel Grid.Row="2" Grid.ColumnSpan="5" Orientation="Horizontal">
+                                                <Button Grid.ColumnSpan="3" Margin="250,5,0,0" FontWeight="Bold" Foreground="{StaticResource ButtonBackColor}" Content="Add Channel" FontSize="12" Height="30" 
                                                 Style="{DynamicResource MaterialDesignRaisedDarkButton}" Width="120" Command="{Binding Command_AddChannel}"/>
-                                            <Button Grid.Row="2" Grid.ColumnSpan="5" Margin="5,5,0,0" FontWeight="Bold" Foreground="{StaticResource ButtonBackColor}" Content="Delete Channel" FontSize="12" Height="30" 
+                                                <Button Grid.Row="2" Grid.ColumnSpan="5" Margin="5,5,0,0" FontWeight="Bold" Foreground="{StaticResource ButtonBackColor}" Content="Delete Channel" FontSize="12" Height="30" 
                                                 Style="{DynamicResource MaterialDesignRaisedDarkButton}" Width="120" Command="{Binding Command_DeleteChannel}"/>
 
-                                        </StackPanel>
-                                        
-                                        
-                                    </Grid>
+                                            </StackPanel>
 
-                                </GroupBox>
+
+                                        </Grid>
+
+                                    </GroupBox>
+                                </StackPanel>
                                 
                                 <GroupBox Grid.Row="3" Grid.ColumnSpan="2" Margin="10" Header="Overlay Setting" Style="{StaticResource  MaterialDesignCardGroupBox}" FontSize="12">
                                     <GroupBox.HeaderTemplate>
@@ -598,7 +726,7 @@
 
 
                                                     <materialDesign:DataGridComboBoxColumn
-                                                            Width="180"
+                                                            Width="175"
                                                             Header="VideoFilter"
                                                             IsEditable="True"
                                                             materialDesign:HintAssist.Hint="VideoFilter"
@@ -628,7 +756,7 @@
                                                     </materialDesign:DataGridComboBoxColumn>
 
                                                     <materialDesign:DataGridComboBoxColumn
-                                                             Width="180"
+                                                             Width="175"
                                                              Header="AudioFilter"
                                                              IsEditable="True"
                                                              materialDesign:HintAssist.Hint="AudioFilter"
@@ -698,7 +826,6 @@
                                 </GroupBox>
                                    
 
-
                                 <GroupBox Grid.Row="4" Grid.ColumnSpan="2" Margin="10" Header="InPut Setting" 
                                           Style="{StaticResource  MaterialDesignCardGroupBox}" FontSize="12">
                                     <GroupBox.HeaderTemplate>
@@ -745,8 +872,6 @@
                                     </Grid>
 
                                 </GroupBox>
-
-
                              
 
                             </Grid>

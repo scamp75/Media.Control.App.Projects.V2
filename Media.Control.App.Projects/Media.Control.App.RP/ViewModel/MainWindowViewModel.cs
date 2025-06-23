@@ -278,14 +278,6 @@ namespace Media.Control.App.RP.ViewModel
         {
             _mainWindow = mainWindow;
 
-            logger = new Logger();
-            logger.ConnectHub();
-
-            mediaApi = new MediaApi();
-            mediaApi.ConnectHub();
-            mediaApi.MediaDataEvent += MediaApi_MediaDataEvent;
-            mediaApi.UpdateMediaDataEvent += MediaApi_UpdateMediaDataEvent;
-
             ping = new Model.Engine.Ping();
 
             Command_Close = new RelayCommand(CommandClose);
@@ -1800,8 +1792,16 @@ namespace Media.Control.App.RP.ViewModel
 
         public async void SetConfig(System.Windows.Controls.Image Handle)
         {
+            logger = new Logger();
+            logger.ConnectHub();
 
-            if(SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnuOverlayMode.Decklink)
+            mediaApi = new MediaApi();
+            mediaApi.ConnectHub();
+            mediaApi.MediaDataEvent += MediaApi_MediaDataEvent;
+            mediaApi.UpdateMediaDataEvent += MediaApi_UpdateMediaDataEvent;
+
+
+            if (SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnuOverlayMode.Decklink)
             {
                 string aclsid = SystemConfigDataStatic.ChannelConfigData.OverlayFilters.AudioClsid;
                 string vclsid = SystemConfigDataStatic.ChannelConfigData.OverlayFilters.VideoClsid;

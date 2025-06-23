@@ -257,5 +257,12 @@ namespace Media.Control.App.ManagerBa.View
             }
         }
 
+        private void ComEngineType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //var comboBox = sender as ComboBox;
+            //var selected = comboBox?.SelectedItem;
+
+        }
+            
     }
 }
