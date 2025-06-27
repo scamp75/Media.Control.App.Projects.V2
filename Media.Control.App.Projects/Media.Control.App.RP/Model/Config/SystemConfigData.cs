@@ -44,10 +44,15 @@ namespace Media.Control.App.RP.Model.Config
         public static ControlConfigData ControlConfigData { get; set; } 
         public static HotKeyConfigData HotKeyConfigData { get; set; } 
 
-        public static void Load(EnuChannel channel, SystemConfigData config)
+        public static VdcpConfig VdcpConfigData { get; set; }
+           
+
+
+        public static void Load(EnmChannel channel, SystemConfigData config)
         {
 
             ChannelConfigData = new ChannelConfigData2();
+            VdcpConfigData = new VdcpConfig();
             ControlConfigData = new ControlConfigData();
             HotKeyConfigData = new HotKeyConfigData();  
 
@@ -56,6 +61,7 @@ namespace Media.Control.App.RP.Model.Config
 
             ChannelConfig channelConfig = config.ChannelConfigData.ChannelList.Where(x => x.Channel == channel).FirstOrDefault();
             OverlayFilter overlayFilter = config.ChannelConfigData.OverlayFilters.Where(x => x.Channel == channel).FirstOrDefault();
+            VdcpPortConfig vdcpPortConfig = config.ChannelConfigData.VdcpConfigs.VdcpPortConfigs.Where(x => x.Channel == channel).FirstOrDefault();
 
             ChannelConfigData2 channelData2 = new ChannelConfigData2();
             channelData2.EnginType = config.ChannelConfigData.EnginType;
@@ -63,6 +69,9 @@ namespace Media.Control.App.RP.Model.Config
             channelData2.ChannelList = channelConfig;
             channelData2.OverlayFilters = overlayFilter;
             channelData2.InPutList = config.ChannelConfigData.InPutList;
+            channelData2.VdcpType = config.ChannelConfigData.VdcpConfigs.VdcpType; 
+            channelData2.IpAddress = config.ChannelConfigData.VdcpConfigs.IpAddress;
+            channelData2.VdcpPortConfig = vdcpPortConfig;
 
             ChannelConfigData = channelData2;
             ControlConfigData = config.ControlConfigData;

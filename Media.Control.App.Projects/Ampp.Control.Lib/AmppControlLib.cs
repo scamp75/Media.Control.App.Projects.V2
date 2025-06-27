@@ -9,13 +9,13 @@ using System.Windows.Media.Media3D;
 namespace Ampp.Control.lib
 {
     public enum EnumControlType { ElasticRecorder, ClipPlayer, CleanCut }
-    public enum EnmRecoderControl { Prepare, Startprepare, Record, Startat, Stop, Stopat,
+    public enum EnmRecoderControl { None, Prepare, Startprepare, Record, Startat, Stop, Stopat,
         Recordingstate, Recordconfig, Getstate, Ping, Notify }
 
     public enum EnmCleancut { Getstate, Inputstate, Videostandard, Inputassignment, Ping }
     public enum EnmPlayerControl
-    {
-        Transportstate, Clip, Playpause, Loop, Fastforward, Rewind, Startat, Rate,
+    {   
+        None,Transportstate, Clip, Playpause, Loop, Fastforward, Rewind, Startat, Rate,
         Stopat, Gotostart, Gotoend, Stepforward, Stepback, Markin, Markout, Seek, Shuttle,
         Autorecue, Transportcommand, Videostandard, Getstate, Clearassets, Ping
     }

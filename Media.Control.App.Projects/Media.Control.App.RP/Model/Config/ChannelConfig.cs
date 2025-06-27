@@ -10,7 +10,7 @@ namespace Media.Control.App.RP.Model.Config
     {
         public EnmControlType ChannelType { get; set; }
 
-        public EnuChannel Channel { get; set; }
+        public EnmChannel Channel { get; set; }
 
         public string Name { get; set; }
 

@@ -40,7 +40,12 @@ namespace Media.Control.App.ManagerBa.ViewModel
 
         public ICommand Command_DeleteInput { get; }
 
+        public ICommand Command_AddCom { get; }
 
+        public ICommand Command_DeleteCom { get; }
+
+
+        public ObservableCollection<VdcpPortConfig> VdcpPortConfigList { get; set; } 
 
         public ObservableCollection<EnuVdcpType> PortTypeList { get; set; } 
 
@@ -70,6 +75,13 @@ namespace Media.Control.App.ManagerBa.ViewModel
 
 
         public List<EnuChannelType> ChannelTypeList { get; set; }
+
+        private VdcpPortConfig _SelectedVdcpconfig { get; set; }
+        public VdcpPortConfig SelectedVdcpconfig
+        {
+            get => _SelectedVdcpconfig;
+            set { _SelectedVdcpconfig = value; OnPropertyChanged(); }
+        }
 
         private ChannelConfig selectedChannelItem { get; set; } 
 
@@ -209,6 +221,9 @@ namespace Media.Control.App.ManagerBa.ViewModel
             Command_AddInput = new RelayCommand(CommandAddInput);
             Command_DeleteInput = new RelayCommand(CommandDeleteInput);
 
+            Command_AddCom = new RelayCommand(CommandAddCom);
+            Command_DeleteCom = new RelayCommand(CommandDeleteCom);
+
             ChannelTypeList = new List<EnuChannelType>() {EnuChannelType.None,
                 EnuChannelType.Player, EnuChannelType.Recoder };
 
@@ -258,10 +273,11 @@ namespace Media.Control.App.ManagerBa.ViewModel
             PortTypeList.Add(EnuVdcpType.Serial);
             PortTypeList.Add(EnuVdcpType.Udp);
 
+            VdcpPortConfigList = new ObservableCollection<VdcpPortConfig>();
 
             ComPortList = new ObservableCollection<string>();
 
-            for (int i = 3; i < 9; i++)
+            for (int i = 3; i < 10; i++)
             {
                 string port = $"COM{i}";
                 ComPortList.Add(port);
@@ -291,6 +307,24 @@ namespace Media.Control.App.ManagerBa.ViewModel
 
             SetHotKeyInit();
             DisplaySystemConfig();
+        }
+
+        private void CommandDeleteCom(object? obj)
+        {
+            VdcpPortConfigList.Remove(SelectedVdcpconfig);
+        }
+
+        private void CommandAddCom(object? obj)
+        {
+            int index = VdcpPortConfigList.Count + 3;
+
+            string comName = $"COM{index}";
+
+            EnuChannel channel = (EnuChannel)Enum.Parse(typeof(EnuChannel), $"Channel{index}");
+
+            VdcpPortConfigList.Add(new
+                VdcpPortConfig
+            { Channel = channel, ComPort = comName, SelectComPort = 0, Port = 0 });
         }
 
         private void CommandDeleteItem(object? obj)
@@ -358,9 +392,12 @@ namespace Media.Control.App.ManagerBa.ViewModel
                     Fabric = systemConfigData.ChannelConfigData.AmppConfig.Fabric;
                     //////////////////////////////////////////////////////////////////////////////////
 
+                    SelectPortType = systemConfigData.ChannelConfigData.VdcpConfigs.VdcpType;
+                    PortIpAddress = systemConfigData.ChannelConfigData.VdcpConfigs.IpAddress;
+
                     ChannelSettingList = new ObservableCollection<ChannelConfig>(systemConfigData.ChannelConfigData.ChannelList);
                     OverlayFiltersList = new ObservableCollection<OverlayFilter>(systemConfigData.ChannelConfigData.OverlayFilters);
-                  
+                    VdcpPortConfigList = new ObservableCollection<VdcpPortConfig>(systemConfigData.ChannelConfigData.VdcpConfigs.VdcpPortConfigs);
 
 
                     if (OverlayFiltersList.Count == 0)
@@ -529,11 +566,7 @@ namespace Media.Control.App.ManagerBa.ViewModel
 
             systemConfigData.ChannelConfigData.VdcpConfigs.IpAddress = PortIpAddress;
             systemConfigData.ChannelConfigData.VdcpConfigs.VdcpType = SelectPortType;
-
-
-
-            //systemConfigData.ChannelConfigData.VdcpConfigs.VdcpPortConfigs 
-
+            systemConfigData.ChannelConfigData.VdcpConfigs.VdcpPortConfigs = VdcpPortConfigList.ToList();
 
             systemConfigData.ChannelConfigData.ChannelList.Clear();
             systemConfigData.ChannelConfigData.ChannelList = ChannelSettingList.ToList();

@@ -12,13 +12,13 @@ namespace Media.Control.App.RP.Model
         List,
         Image
     }
-    public enum EnuEnaginType { Ampp, Amp }
+    public enum EnmEnaginType { Ampp, Vdcp }
 
-    public enum EnuChannel { Channel1, Channel2 , Channel3, Channel4, Channel5, Channel6, Channel7, Channel8 }
+    public enum EnmChannel { Channel1, Channel2 , Channel3, Channel4, Channel5, Channel6, Channel7, Channel8 }
 
     //public enum EnuChannelType {None, Player, Recoder}
 
-    public enum EnuOverlayMode { None, NDI, Decklink }
+    public enum EnmOverlayMode { None, NDI, Decklink }
 
     public class AppConfigDefin
     {

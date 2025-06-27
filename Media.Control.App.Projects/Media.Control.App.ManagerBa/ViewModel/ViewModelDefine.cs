@@ -131,21 +131,6 @@ namespace Media.Control.App.ManagerBa.ViewModel
             get { return mediaWorkNode; }
         }
 
-     
-
-        private string _ComPort { set;get; }
-        public string ComPort
-        {
-            set { _ComPort = value; OnPropertyChanged(nameof(ComPort)); }
-            get { return _ComPort; }
-        }
-
-        private int _SelectPort { set; get; }
-        public int SelectPort
-        {
-            set { _SelectPort = value; OnPropertyChanged(nameof(SelectPort)); }
-            get { return _SelectPort; }
-        }
 
         private string _PortIpAddress { get; set; }
 
@@ -154,6 +139,15 @@ namespace Media.Control.App.ManagerBa.ViewModel
             set { _PortIpAddress = value; OnPropertyChanged(nameof(PortIpAddress)); }
             get { return _PortIpAddress; }
         }
+
+
+        private int _SelectPort { set; get; }
+        public int SelectPort
+        {
+            set { _SelectPort = value; OnPropertyChanged(nameof(SelectPort)); }
+            get { return _SelectPort; }
+        }
+
 
         private int _IpPort { get; set; }
 

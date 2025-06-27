@@ -23,6 +23,7 @@
     <ProjectReference Include="..\Ampp.Control.Lib\Ampp.Control.Lib.csproj" />
     <ProjectReference Include="..\DeckLinkDirectShow\DeckLinkDirectShowLib.csproj" />
     <ProjectReference Include="..\MpvNet\MpvNet.csproj" />
+    <ProjectReference Include="..\Vdcp.Control.Client\Vdcp.Control.Client\Vdcp.Control.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

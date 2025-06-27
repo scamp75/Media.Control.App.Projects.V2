@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Media.Control.App.ManagerBa.Model
+namespace Media.Control.App.RP.Model.Config
 {
+    public enum EnuVdcpType { Serial, Udp }
 
     public class VdcpConfig
     {
@@ -18,7 +19,7 @@ namespace Media.Control.App.ManagerBa.Model
 
     public class VdcpPortConfig
     {
-        public EnuChannel Channel { get; set; }
+        public EnmChannel Channel { get; set; }
         public string ComPort { get; set; } 
         public int SelectComPort { get; set; } 
         public int Port { get; set; } 

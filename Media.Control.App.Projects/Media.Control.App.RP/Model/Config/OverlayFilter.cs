@@ -8,9 +8,9 @@ namespace Media.Control.App.RP.Model.Config
 {
     public class OverlayFilter
     {
-        public EnuChannel Channel { get; set; }
+        public EnmChannel Channel { get; set; }
 
-        public EnuOverlayMode OverlayMode { get; set; }
+        public EnmOverlayMode OverlayMode { get; set; }
         public string VideoFilter { get; set; }
 
         public string AudioFilter { get; set; }

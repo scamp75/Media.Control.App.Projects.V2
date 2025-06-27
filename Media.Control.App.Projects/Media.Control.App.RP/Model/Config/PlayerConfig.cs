@@ -8,7 +8,7 @@ namespace Media.Control.App.RP.Model.Config
 {
     public class PlayerCleancutConfig
     {
-        public EnuChannel Channel { get; set; }
+        public EnmChannel Channel { get; set; }
         public string Cleancut { get; set; }
         
     }

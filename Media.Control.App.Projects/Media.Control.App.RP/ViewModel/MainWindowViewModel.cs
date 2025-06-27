@@ -37,6 +37,8 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.IO.Pipes;
 using System.Text;
+using Vdcp.Control.Client;
+using static Vdcp.Control.Client.VdcpUdpAdapter;
 
 namespace Media.Control.App.RP.ViewModel
 {
@@ -59,7 +61,7 @@ namespace Media.Control.App.RP.ViewModel
         private ProxyFileTransfer proxyFileTransfer = null;
 
         //= EnmMediaState.Eject;
-        public EnuChannel ChannelName { get; set; }
+        public EnmChannel ChannelName { get; set; }
 
         private long PlayItemDuration = 0;
         private bool isClipLoad { get; set; } = false;
@@ -971,6 +973,41 @@ namespace Media.Control.App.RP.ViewModel
             }
         }
 
+        #region 0. Vdcp Timecode / State control =============>
+
+        public string GetTimecode(byte Postiontype)
+        {
+            var output = new JObject();
+
+            var obj = new 
+            {
+                Postiontype = Postiontype
+            };
+
+            engineControl1.Vdcp(EumCommandKey.POSTIONREQUEST, out output, JObject.FromObject(obj));
+
+            if (output != null && output.ContainsKey("Postion"))
+            {
+                return output["Postion"].Value<string>();
+            }
+            else return "00:00:00:00";
+        }
+
+
+        public List<string> GetState()
+        {
+            var output = new JObject();
+
+            engineControl1.Vdcp(EumCommandKey.PORTSTATUS, out output);
+
+            if (output != null && output.ContainsKey("State"))
+            {
+                return output["State"].Value<List<string>>();
+            }
+            else return null;
+        }
+
+        #endregion
 
         #region 1. Recoder control =============>
 
@@ -1220,7 +1257,7 @@ namespace Media.Control.App.RP.ViewModel
 
             if(control != null)
             {
-                var result = control.Player(EnuEnaginType.Ampp, EnmPlayerControl.Playpause);
+                var result = control.Player(EnmEnaginType.Ampp, EnmPlayerControl.Playpause);
 
                 if (result.Result)
                     SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Playpause Success");
@@ -1233,7 +1270,7 @@ namespace Media.Control.App.RP.ViewModel
         private void Start(EngineControl control, string startTime)
         {
             var start = new { Start = $"{startTime}" };
-            var result = control.Player(EnuEnaginType.Ampp, EnmPlayerControl.Startat, JObject.FromObject(start));
+            var result = control.Player(EnmEnaginType.Ampp, EnmPlayerControl.Startat, JObject.FromObject(start));
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Play Success");
@@ -1245,7 +1282,7 @@ namespace Media.Control.App.RP.ViewModel
         private void Stop(string stopTime)
         {
             var start = new { Stop = $"{stopTime}" };
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Stopat, JObject.FromObject(start));
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Stopat, JObject.FromObject(start));
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Play Success");
@@ -1263,7 +1300,7 @@ namespace Media.Control.App.RP.ViewModel
 
             if(control  != null)
             {
-                var result = control.Player(EnuEnaginType.Ampp, EnmPlayerControl.Clearassets, JObject.FromObject(eject));
+                var result = control.Player(EnmEnaginType.Ampp, EnmPlayerControl.Clearassets, JObject.FromObject(eject));
 
                 if (result.Result)
                     SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Eject Success");
@@ -1275,7 +1312,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void First()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Gotostart);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Gotostart);
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player First Success");
@@ -1286,7 +1323,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void End()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Gotoend);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Gotoend);
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player End Success");
@@ -1297,7 +1334,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void Fastforward()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Fastforward);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Fastforward);
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Fastforward Success");
@@ -1307,7 +1344,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void Rewind()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Rewind);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Rewind);
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Rewind Success");
@@ -1318,7 +1355,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void StepBack()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Stepback);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Stepback);
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Back 1Frame Success");
@@ -1328,7 +1365,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void StepForward()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Stepforward);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Stepforward);
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Forwar 1Frame Success");
@@ -1340,7 +1377,7 @@ namespace Media.Control.App.RP.ViewModel
         {
             var obj = new { Rate = value };
 
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Rate, JObject.FromObject(obj));
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Rate, JObject.FromObject(obj));
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Shuttle {value} Rate Success");
@@ -1354,7 +1391,7 @@ namespace Media.Control.App.RP.ViewModel
         {
             var obj = new { Rate = value };
 
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Shuttle, JObject.FromObject(obj));
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Shuttle, JObject.FromObject(obj));
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Shuttle {value} Rate Success");
@@ -1384,7 +1421,7 @@ namespace Media.Control.App.RP.ViewModel
 
             var obj = new { frame = value };
 
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Seek, JObject.FromObject(obj));
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Seek, JObject.FromObject(obj));
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Seek {value} Frame Success");
@@ -1396,7 +1433,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void MarkIn()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Markin);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Markin);
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player MarkIn Success");
             else
@@ -1405,7 +1442,7 @@ namespace Media.Control.App.RP.ViewModel
 
         private void MarkOut()
         {
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Markout);
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Markout);
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player MarkOut Success");
@@ -1440,7 +1477,7 @@ namespace Media.Control.App.RP.ViewModel
         {
             if (MediaState != EnmMediaState.Eject)
             {
-                var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Gotostart);
+                var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Gotostart);
 
                 if (result.Result)
                     SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Goto Markin Success");
@@ -1453,7 +1490,7 @@ namespace Media.Control.App.RP.ViewModel
         {
             if (MediaState != EnmMediaState.Eject)
             {
-                var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Gotoend);
+                var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Gotoend);
 
                 if (result.Result)
                     SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Goto Markout Success");
@@ -1476,7 +1513,7 @@ namespace Media.Control.App.RP.ViewModel
                     endBehaviour = "repeat"
                 };
 
-                var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Transportcommand, JObject.FromObject(transport));
+                var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Transportcommand, JObject.FromObject(transport));
 
                 if (result.Result)
                     SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Delete MarkIn Success");
@@ -1499,7 +1536,7 @@ namespace Media.Control.App.RP.ViewModel
                     endBehaviour = "repeat"
                 };
 
-                var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Transportcommand, JObject.FromObject(transport));
+                var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Transportcommand, JObject.FromObject(transport));
 
                 if (result.Result)
                     SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player Delete MarkOut Success");
@@ -1524,7 +1561,7 @@ namespace Media.Control.App.RP.ViewModel
                 file = path
             };
 
-            var result = engineControl1.Player(EnuEnaginType.Ampp, EnmPlayerControl.Clip, JObject.FromObject(PlayPrepare));
+            var result = engineControl1.Player(EnmEnaginType.Ampp, EnmPlayerControl.Clip, JObject.FromObject(PlayPrepare));
 
             if (result.Result)
             {
@@ -1569,7 +1606,7 @@ namespace Media.Control.App.RP.ViewModel
                 file = media.Path
             };
 
-            var result = control.Player(EnuEnaginType.Ampp, EnmPlayerControl.Clip, JObject.FromObject(PlayPrepare));
+            var result = control.Player(EnmEnaginType.Ampp, EnmPlayerControl.Clip, JObject.FromObject(PlayPrepare));
           
 
             if (result.Result && (media.InPoint != 0 || media.InPoint != 0))
@@ -1585,7 +1622,7 @@ namespace Media.Control.App.RP.ViewModel
                     endBehaviour = "repeat"
                 };
 
-                control.Player(EnuEnaginType.Ampp, EnmPlayerControl.Transportcommand, JObject.FromObject(transport));
+                control.Player(EnmEnaginType.Ampp, EnmPlayerControl.Transportcommand, JObject.FromObject(transport));
 
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Transportcommand Info InPoint {media.InPoint} OutPoint {media.OutPoint}");
             }
@@ -1651,7 +1688,7 @@ namespace Media.Control.App.RP.ViewModel
                 Program = true
             };
 
-            var result = engineCleanCut.CleanCut(EnuEnaginType.Ampp, EnmCleancut.Inputstate, JObject.FromObject(Prepare));
+            var result = engineCleanCut.CleanCut(EnmEnaginType.Ampp, EnmCleancut.Inputstate, JObject.FromObject(Prepare));
 
             if (result.Result)
                 SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] Player CleanCut {index} Success");
@@ -1696,7 +1733,7 @@ namespace Media.Control.App.RP.ViewModel
                 jsonFromFile = System.IO.File.ReadAllText(@path);
 
 
-            ChannelName = Enum.Parse<EnuChannel>(channel);
+            ChannelName = Enum.Parse<EnmChannel>(channel);
             SystemConfigData ConfigData = JsonConvert.DeserializeObject<SystemConfigData>(jsonFromFile);
             SystemConfigDataStatic.Load(ChannelName, ConfigData);
 
@@ -1730,7 +1767,7 @@ namespace Media.Control.App.RP.ViewModel
             }
             else
             {
-                System.Windows.MessageBox.Show($"{Enum.Parse<EnuChannel>(channel)}의 설정 정보가 존재 하지 않습니다. 확인 후 다시 실행 해주세요.");
+                System.Windows.MessageBox.Show($"{Enum.Parse<EnmChannel>(channel)}의 설정 정보가 존재 하지 않습니다. 확인 후 다시 실행 해주세요.");
             }
             return result;
         }
@@ -1801,7 +1838,7 @@ namespace Media.Control.App.RP.ViewModel
             mediaApi.UpdateMediaDataEvent += MediaApi_UpdateMediaDataEvent;
 
 
-            if (SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnuOverlayMode.Decklink)
+            if (SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnmOverlayMode.Decklink)
             {
                 string aclsid = SystemConfigDataStatic.ChannelConfigData.OverlayFilters.AudioClsid;
                 string vclsid = SystemConfigDataStatic.ChannelConfigData.OverlayFilters.VideoClsid;
@@ -1809,7 +1846,7 @@ namespace Media.Control.App.RP.ViewModel
                 /// Decklink Capture Start
                 deckLinkCapture.Start(vclsid, aclsid);
             }
-            else if (SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnuOverlayMode.NDI)
+            else if (SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnmOverlayMode.NDI)
             {
                 // NDI Capture Start
                 ndiReceivelib.VideoImage = Handle;
@@ -1817,7 +1854,7 @@ namespace Media.Control.App.RP.ViewModel
                 //ndiReceivelib.AudioLeveRight = _mainWindow.ReigthProgressBar;
                 ndiReceivelib.Start(SystemConfigDataStatic.ChannelConfigData.OverlayFilters.NDIFilter);
             }
-            else if (SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnuOverlayMode.None)
+            else if (SystemConfigDataStatic.ChannelConfigData.OverlayFilters.OverlayMode == EnmOverlayMode.None)
             {
                 //MessageBox.Show("Overlay Mode None");
             }
@@ -1836,78 +1873,78 @@ namespace Media.Control.App.RP.ViewModel
 
             if (result)
             {
-                #region Ampp key frame 받는 부분 삭제
-                // Ampp key frame 받는 부분 삭제
-                SetImageHandle(Handle);
-                //var startResult = await engineControl.Start(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                //    SystemConfigDataStatic.ChannelConfigData.ChannelList.ProducerName, Handle);
-                //if (startResult)
-                //    SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] EngineControl Start Success");
-                //else
-                //    SendLog(LogType.Error, $"[{MethodBase.GetCurrentMethod().Name}] EngineControl Start Fail");
 
-                #endregion
-             
-                if (CurrentControlType == EnmControlType.Recoder)
+                if (SystemConfigDataStatic.ChannelConfigData.EnginType == EnmEnaginType.Ampp)
                 {
-                    _mainWindow.RecorderSettingControl.txtPath.Text = SystemConfigDataStatic.ControlConfigData.RecorderSetting.DefaultFolder;
-                    _mainWindow.RecorderSettingControl.txtTitle.Text = SystemConfigDataStatic.ControlConfigData.RecorderSetting.DefaultName;
+                    #region Ampp key frame 받는 부분 삭제
+                    // Ampp key frame 받는 부분 삭제
+                    SetImageHandle(Handle);
+                    //var startResult = await engineControl.Start(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                    //    SystemConfigDataStatic.ChannelConfigData.ChannelList.ProducerName, Handle);
+                    //if (startResult)
+                    //    SendLog(LogType.Info, $"[{MethodBase.GetCurrentMethod().Name}] EngineControl Start Success");
+                    //else
+                    //    SendLog(LogType.Error, $"[{MethodBase.GetCurrentMethod().Name}] EngineControl Start Fail");
+
+                    #endregion
+
+                    if (CurrentControlType == EnmControlType.Recoder)
+                    {
+                        _mainWindow.RecorderSettingControl.txtPath.Text = SystemConfigDataStatic.ControlConfigData.RecorderSetting.DefaultFolder;
+                        _mainWindow.RecorderSettingControl.txtTitle.Text = SystemConfigDataStatic.ControlConfigData.RecorderSetting.DefaultName;
+                    }
+                    else
+                    {
+                        string cleancut = SystemConfigDataStatic.ControlConfigData.PlayerSetting.PlayerCleancutConfigs
+                                             .Where(c => c.Channel == ChannelName)?.FirstOrDefault().Cleancut;
+
+                        engineCleanCut = new EngineControl(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                                                           cleancut, ChannelName + "_CleanCut");
+
+                        engineCleanCut.OnAmppControlNotifyEvent += EngineControl_OnAmppControlNotifyEvent;
+                        engineCleanCut.OnAmppControlErrorEvent += EngineControl_OnAmppControlErrorEvent;
+                        engineCleanCut.OnStateEvent += EngineControl_OnStateEvent;
+
+                        result = await engineCleanCut.Connect(SystemConfigDataStatic.ChannelConfigData.EnginType);
+
+                        engineControl2 = new EngineControl(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                                                           SystemConfigDataStatic.ChannelConfigData.ChannelList.WorkLoad2,
+                                                           ChannelName + "_EngineControl2");
+
+                        engineControl2.OnAmppControlNotifyEvent += EngineControl_OnAmppControlNotifyEvent;
+                        engineControl2.OnAmppControlErrorEvent += EngineControl_OnAmppControlErrorEvent;
+                        engineControl2.OnStateEvent += EngineControl_OnStateEvent;
+
+                        result = await engineControl2.Connect(SystemConfigDataStatic.ChannelConfigData.EnginType);
+                    }
+
+                    if (appMode == AppMode.Recoder)
+                    {
+                        engineControl1?.Recoder(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                            EnmRecoderControl.Getstate, new JObject());
+                    }
+                    else
+                    {
+                        engineControl1?.Player(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                            EnmPlayerControl.Getstate, new JObject());
+
+                        MediaItemDone();
+                    }
+
+                    if (appMode == AppMode.Recoder)
+                    {
+                        interval = 10000;
+                    }
+                    else
+                    {
+                        ChangeCleancut(1);
+                        onariMediaInfo.PlayMedia.Control = engineControl1;
+                        onariMediaInfo.PlayMedia.Cleancut = 1;
+                    }
                 }
-                else
+                else if(SystemConfigDataStatic.ChannelConfigData.EnginType == EnmEnaginType.Vdcp)
                 {
 
-                    string cleancut = SystemConfigDataStatic.ControlConfigData.PlayerSetting.PlayerCleancutConfigs
-                                         .Where(c => c.Channel == ChannelName)?.FirstOrDefault().Cleancut;
-
-               
-
-
-                    engineCleanCut = new EngineControl(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                                                       cleancut, ChannelName + "_CleanCut");
-
-                    engineCleanCut.OnAmppControlNotifyEvent += EngineControl_OnAmppControlNotifyEvent;
-                    engineCleanCut.OnAmppControlErrorEvent += EngineControl_OnAmppControlErrorEvent;
-                    engineCleanCut.OnStateEvent += EngineControl_OnStateEvent;
-
-
-                   result =  await engineCleanCut.Connect(SystemConfigDataStatic.ChannelConfigData.EnginType);
-
-                    engineControl2 = new EngineControl(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                                                       SystemConfigDataStatic.ChannelConfigData.ChannelList.WorkLoad2,
-                                                       ChannelName + "_EngineControl2");
-
-                    engineControl2.OnAmppControlNotifyEvent += EngineControl_OnAmppControlNotifyEvent;
-                    engineControl2.OnAmppControlErrorEvent += EngineControl_OnAmppControlErrorEvent;
-                    engineControl2.OnStateEvent += EngineControl_OnStateEvent;
-
-                    result = await engineControl2.Connect(SystemConfigDataStatic.ChannelConfigData.EnginType);
-
-                }
-
-                if (appMode == AppMode.Recoder)
-                {
-                    engineControl1?.Recoder(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                        EnmRecoderControl.Getstate, new JObject());
-                }
-                else
-                {
-
-                    engineControl1?.Player(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                        EnmPlayerControl.Getstate, new JObject());
-
-                    MediaItemDone();
-                }
-
-
-                if (appMode == AppMode.Recoder)
-                {
-                    interval = 10000;
-                }
-                else
-                {
-                    ChangeCleancut(1);
-                    onariMediaInfo.PlayMedia.Control = engineControl1;
-                    onariMediaInfo.PlayMedia.Cleancut = 1;
                 }
             }
             else
@@ -1924,48 +1961,60 @@ namespace Media.Control.App.RP.ViewModel
                 {
                     if (isThread)
                     {
-                        if (appMode == AppMode.Recoder)
+                        _mainWindow.Dispatcher.Invoke(() =>
                         {
-                            _mainWindow.Dispatcher.Invoke(() =>
+                            if (SystemConfigDataStatic.ChannelConfigData.EnginType == EnmEnaginType.Vdcp)
                             {
-                                var size = MediaDiskTime.GetDriveSize(@"V:\");
-                                if (FPS != 0)
-                                {
-                                    var recTime = MediaDiskTime.GetRecordTimeString(size, FPS);
+                               //  obj.ContainsKey("Postiontype")
 
-                                    _mainWindow.RecorderStateControl.DiskSize = $"RecTime: {recTime}";
+                               //_mainWindow.playerStateControl.CurrentTimecode = engineControl1
+                               // .Vdcp(EumCommandKey.POSTIONREQUEST, new JObject()).Result;
+
+
+                            }
+                            else if (SystemConfigDataStatic.ChannelConfigData.EnginType == EnmEnaginType.Ampp)
+                            {
+                                if (appMode == AppMode.Recoder)
+                                {
+                                    var size = MediaDiskTime.GetDriveSize(@"V:\");
+                                    if (FPS != 0)
+                                    {
+                                        var recTime = MediaDiskTime.GetRecordTimeString(size, FPS);
+
+                                        _mainWindow.RecorderStateControl.DiskSize = $"RecTime: {recTime}";
+                                    }
+
+                                    //engineControl1?.Recoder(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                                    //    EnmRecoderControl.Ping, new JObject());
+
+                                    // var reult1 = engineControl1.ExSubscribeToWorkload(WorkloadId, "recorderinfo.notify");
+
+                                    //engineControl1?.Recoder(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                                    //        EnmRecoderControl.Getstate, new JObject());
+
                                 }
-                            });
-
-                            //engineControl1?.Recoder(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                            //    EnmRecoderControl.Ping, new JObject());
-
-                            // var reult1 = engineControl1.ExSubscribeToWorkload(WorkloadId, "recorderinfo.notify");
-
-                            //engineControl1?.Recoder(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                            //        EnmRecoderControl.Getstate, new JObject());
-
-                        }
-                        else
-                        {
-                            
-                            if (StartPlayList)
-                            {
-                                if(onariMediaInfo.PlayMedia.Control != null)
+                                else
                                 {
-                                    await onariMediaInfo.PlayMedia.Control.Player(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                                                    EnmPlayerControl.Getstate, new JObject());
 
-                                    Debug.WriteLine($"[{DateTime.Now.ToString("hh:MM:ss:fff")}] {onariMediaInfo.PlayMedia.Control.EnagineName} Thread Start ......");
+                                    if (StartPlayList)
+                                    {
+                                        if (onariMediaInfo.PlayMedia.Control != null)
+                                        {
+                                            await onariMediaInfo.PlayMedia.Control.Player(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                                                            EnmPlayerControl.Getstate, new JObject());
+
+                                            Debug.WriteLine($"[{DateTime.Now.ToString("hh:MM:ss:fff")}] {onariMediaInfo.PlayMedia.Control.EnagineName} Thread Start ......");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        await engineControl1.Player(SystemConfigDataStatic.ChannelConfigData.EnginType,
+                                                        EnmPlayerControl.Getstate, new JObject());
+                                    }
+
                                 }
                             }
-                            else
-                            {
-                                await engineControl1.Player(SystemConfigDataStatic.ChannelConfigData.EnginType,
-                                                EnmPlayerControl.Getstate, new JObject());
-                            }
-
-                        }
+                        });
                     }
 
                     System.Threading.Thread.Sleep(interval);
